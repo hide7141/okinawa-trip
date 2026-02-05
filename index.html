@@ -176,7 +176,7 @@
                     <div class="w-full md:w-1/2 mt-4 md:mt-0 md:pl-8">
                         <ul class="space-y-2 text-sm text-gray-600">
                             <li><strong>服務費 (必繳):</strong> 每人每晚約 $ TWD (視房型)。3天2夜 = $  x 2晚 x 5人 = $ TWD。</li>
-                            <li><strong>WiFi (選購):</strong> 建議買2個裝置分享，約 $ TWD。</li>
+                            <li><strong>WiFi (選購):</strong> 如何購買：登船後可直接連接船上 WiFi 網頁購買，或至 7 樓船中的服務櫃檯（接待中心） 辦理，費用會直接記在房卡帳單中，下船前結清即可。建議買2個裝置分享，約 $ 490TWD/晚。</li>
                             <li><strong>付費餐廳/飲料:</strong> 預留 $  TWD 享受一頓特色餐。</li>
                             <li class="pt-2 font-bold text-[#d4a373]">總預計需準備信用卡額度: 約 $3,000 TWD</li>
                         </ul>
@@ -416,7 +416,7 @@
             "護照 A4 影本 x 2份 (報到與免稅用)",
             "船票 (電子檔或列印)",
             "信用卡 (Visa/Master，船上綁定用)",
-            "個人常備藥品 (暈船藥、高血壓藥等)",
+            "個人常備藥品 (暈船藥、感冒藥等)",
             "日本上網 SIM 卡或漫遊開通",
             "舒適好走的鞋子",
             "薄外套 (船上冷氣強)"
@@ -425,16 +425,17 @@
         // --- Data: Ship Info ---
         const shipInfos = {
             dining: [
-                { title: "星夢餐廳 (Dream Dining)", type: "免費", desc: "中西式套餐/半自助。位於6樓船尾。適合長輩口味，環境較舒適。" },
-                { title: "麗都自助餐 (The Lido)", type: "免費", desc: "位於12樓。菜色多樣但人潮多、較吵雜。適合早餐或趕時間吃。" },
-                { title: "百味軒 (Pavilion)", type: "免費", desc: "中式/南洋料理。位於6樓。" },
-                { title: "絲路花舞 (Silk Road)", type: "付費", desc: "高級中餐廳，環境優雅，適合慶祝。" },
+                { title: "星夢餐廳 (Dream Dining)", type: "免費", desc: "位於6樓船尾，中西式套餐/半自助。位於6樓船尾。適合長輩口味，環境較舒適。" },
+                { title: "麗都自助餐 (The Lido)", type: "免費", desc: "位於12樓船中。菜色多樣但人潮多、較吵雜。適合早餐或趕時間吃。" },
+                { title: "百味軒 (Pavilion)", type: "免費", desc: "位於6樓船中，中式/南洋料理。。" },
+                { title: "絲路花舞 (Silk Road)", type: "付費", desc: "位於7樓，精緻中式料理與港式點心，裝潢帶有復古舞廳感。早餐時段有提供付費的港式飲茶套餐。" },
+                { title: "藍湖美食 (Blue Lagoon)", type: "付費", desc: "7 樓船中（大廳旁），供東南亞與中式料理，如肉骨茶、沙嗲、牛肉麵、炒粿條等。營業時間最長（通常僅凌晨 4-6 點休息）" },
                 { title: "火鍋 (Hot Pot)", type: "付費", desc: "戶外或半戶外火鍋，天氣好時很有氣氛。" }
             ],
             wifi: [
-                { title: "標準方案", type: "付費", desc: "僅限社交軟體 (Line, FB, IG)。無法看影片。約 HKD 98/晚。" },
-                { title: "尊榮方案", type: "付費", desc: "可看影片 (YouTube, Netflix)。網速較快。約 HKD 128/晚。" },
-                { title: "建議", type: "Tip", desc: "船上網路是衛星訊號，價格高且慢。建議「買2個裝置」共享給5人用，主要用於聯繫，不用每人都買。" }
+                { title: "標準方案", type: "付費", desc: "僅限社交軟體 (Line, FB, IG)。無法流暢看影片。單台約 TWD 245/晚。" },
+                { title: "尊榮方案", type: "付費", desc: "可看影片 (YouTube, Netflix)。網速較快。單台約 TWD 490/晚。" },
+                { title: "建議", type: "Tip", desc: "單日購買的單價較高，若您有高度網路需求，建議一上船就購買整趟航程的方案。建議「買2個裝置」共享給5人用，主要用於聯繫，不用每人都買。" }
             ],
             tips: [
                 { title: "插座電壓", type: "注意", desc: "船上主要為英式三孔 (三角扁型) 或 兩孔圓型。務必攜帶「萬國轉接頭」。" },
@@ -692,5 +693,6 @@
     </script>
 </body>
 </html>
+
 
 
