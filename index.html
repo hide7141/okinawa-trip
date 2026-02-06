@@ -1,726 +1,460 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
+<!doctype html>
+<html lang="zh-Hant-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>探索星號：沖繩家族旅遊指南</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #fdfbf7; color: #4a4a4a; }
-        .tab-active { border-bottom: 3px solid #d4a373; color: #d4a373; font-weight: 700; }
-        .tab-inactive { color: #9ca3af; }
-        .tab-inactive:hover { color: #d4a373; }
-        .card-shadow { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); }
-        .chart-container { position: relative; width: 100%; max-width: 800px; margin: 0 auto; height: 350px; }
-        @media (max-width: 640px) { .chart-container { height: 250px; } }
-        /* Hide scrollbar for clean horizontal scroll */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    </style>
-    <!-- Chosen Palette: Warm Neutrals (Sand, Cream, Driftwood) with Soft Gold Accents -->
-    <!-- Application Structure Plan: 
-         1. Dashboard: Quick status and document checklist (Immediate relief of anxiety).
-         2. Embarkation Timeline: Visual step-by-step for the chaotic port process.
-         3. Ship Guide: Grid layout for facilities/dining, focused on family needs (kids/seniors).
-         4. Okinawa Interactive: The core tool. A searchable, filterable list of spots linked to food options and charter info. 
-         Rationale: Prioritize "Peace of Mind" for the organizer (you). Interactive tools help visualize time/distance constraints.
-    -->
-    <!-- Visualization & Content Choices:
-         1. Interactive Timeline (HTML/JS): For Port flow.
-         2. Bar Chart (Chart.js): To visualize "Driving Time from Port" for Okinawa spots to prevent missing the ship.
-         3. Doughnut Chart (Chart.js): To visualize "Onboard vs Onshore" budget estimation.
-         4. Dynamic Cards: For Spot/Food listings with "Expand Details" interactions.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FamilyVoyage 沖繩3天2夜 | 5人家族行</title>
+  <meta name="description" content="麗星郵輪沖繩3天2夜家族行程筆記：登船流程、郵輪設施、包車資訊、行程景點整理。" />
+
+  <style>
+    :root { --max: 960px; --gap: 14px; }
+    body { margin: 0; font-family: system-ui, -apple-system, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif; line-height: 1.6; }
+    header, main, footer { padding: 20px; }
+    .container { max-width: var(--max); margin: 0 auto; }
+    .muted { opacity: .75; }
+    .skip-link { position:absolute; left:-999px; top:auto; width:1px; height:1px; overflow:hidden; }
+    .skip-link:focus { left: 12px; top: 12px; width:auto; height:auto; padding: 10px 12px; background:#fff; border:1px solid #ccc; z-index: 9999; }
+
+    nav { position: sticky; top: 0; background: #fff; border-bottom: 1px solid #eee; z-index: 50; }
+    nav .container { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 0; }
+    nav a { text-decoration: none; padding: 8px 10px; border-radius: 8px; color: inherit; }
+    nav a:hover { background: #f5f5f5; }
+
+    section { padding: 22px 0; border-bottom: 1px solid #eee; }
+    h1 { margin: 0 0 6px; font-size: 1.6rem; }
+    h2 { margin: 0 0 8px; font-size: 1.25rem; }
+    h3 { margin: 14px 0 6px; font-size: 1.05rem; }
+    h4 { margin: 12px 0 6px; font-size: 1rem; }
+
+    .card { border: 1px solid #eee; border-radius: 12px; padding: 14px; margin: 12px 0; }
+    .grid { display: grid; gap: var(--gap); grid-template-columns: 1fr; }
+    @media (min-width: 820px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #eee; padding: 8px; text-align: left; vertical-align: top; }
+    th { background: #fafafa; }
+    .cell-center { text-align: center; }
+
+    .placeholder { background: #fafafa; border: 1px dashed #ddd; border-radius: 10px; padding: 10px; }
+    .note { padding: 10px 12px; border-left: 4px solid #ddd; background: #fafafa; border-radius: 8px; }
+
+    /* checklist */
+    .checklist { list-style: none; padding: 0; margin: 0; }
+    .checklist-item { margin: 6px 0; }
+    .checklist-item label { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .checklist-item input[type="checkbox"] { width: 16px; height: 16px; }
+
+    /* tabs */
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+    .tabs button {
+      cursor: pointer;
+      padding: 8px 10px;
+      border: 1px solid #ddd;
+      background: #fff;
+      border-radius: 10px;
+      font: inherit;
+    }
+    .tabs button[aria-selected="true"] { border-color: #999; font-weight: 700; }
+    .tab-panel { border: 1px solid #eee; border-radius: 12px; padding: 12px; margin-top: 10px; }
+  </style>
 </head>
-<body class="bg-[#fdfbf7] min-h-screen flex flex-col">
 
-    <!-- Navigation -->
-    <nav class="sticky top-0 z-50 bg-white shadow-sm border-b border-[#e5e5e5]">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="flex justify-between items-center h-16">
-                <div class="font-bold text-xl text-[#d4a373] tracking-wide">FamilyVoyage <span class="text-xs text-gray-400 block sm:inline font-normal">沖繩3天2夜 | 5人家族行</span></div>
-                <div class="hidden md:flex space-x-8">
-                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-active py-5 px-2 transition-colors duration-200">總覽 & 清單</button>
-                    <button onclick="switchTab('port')" id="nav-port" class="tab-inactive py-5 px-2 transition-colors duration-200">基隆港流程</button>
-                    <button onclick="switchTab('ship')" id="nav-ship" class="tab-inactive py-5 px-2 transition-colors duration-200">郵輪設施</button>
-                    <button onclick="switchTab('okinawa')" id="nav-okinawa" class="tab-inactive py-5 px-2 transition-colors duration-200">沖繩包車攻略</button>
-                </div>
-                <!-- Mobile Menu Button -->
-                <button onclick="toggleMobileMenu()" class="md:hidden text-gray-500 focus:outline-none">
-                    <span class="text-2xl">☰</span>
-                </button>
-            </div>
-            <!-- Mobile Menu -->
-            <div id="mobile-menu" class="hidden md:hidden pb-4">
-                <button onclick="switchTab('dashboard')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">總覽 & 清單</button>
-                <button onclick="switchTab('port')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">基隆港流程</button>
-                <button onclick="switchTab('ship')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">郵輪設施</button>
-                <button onclick="switchTab('okinawa')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">沖繩包車攻略</button>
-            </div>
+<body>
+  <a class="skip-link" href="#main">跳到主要內容</a>
+
+  <header>
+    <div class="container">
+      <h1>歡迎來到麗星郵輪-沖繩旅遊筆記</h1>
+      <p class="muted">針對 2 位長者、2 位大人、1 位兒童（5 歲）的專屬計畫。此頁整合所有重要資訊，方便隨時回來查看。</p>
+    </div>
+  </header>
+
+  <!-- 頁面導覽（主選單） -->
+  <nav aria-label="頁面導覽">
+    <div class="container">
+      <a href="#overview">總覽 &amp; 清單</a>
+      <a href="#keelung">基隆港流程</a>
+      <a href="#ship">郵輪設施</a>
+      <a href="#charter">沖繩包車資訊</a>
+      <a href="#spots">行程景點</a>
+    </div>
+  </nav>
+
+  <main id="main">
+    <div class="container">
+
+      <!-- 總覽 & 清單 -->
+      <section id="overview" aria-labelledby="overview-title">
+        <h2 id="overview-title">總覽 &amp; 清單</h2>
+
+        <div class="grid grid-2">
+          <div class="card">
+            <h3>出發前必備清單</h3>
+            <ul id="checklist" class="checklist" aria-label="出發前必備清單">
+              <!-- rendered by JS -->
+            </ul>
+            <p class="muted">✔ 勾選狀態會自動儲存（重新整理不會消失）</p>
+          </div>
+
+          <div class="card">
+            <h3>行程概覽</h3>
+            <ul>
+              <li><strong>Day 1：</strong>基隆港登船（啟航 15:00；報到 11:00~13:00）</li>
+              <li><strong>Day 2：</strong>沖繩那霸（抵達 TW 10:00 / JP 11:00；啟航 TW 20:00 / JP 21:00）</li>
+              <li><strong>Day 3：</strong>返抵基隆（抵達 15:00）</li>
+            </ul>
+            <p class="note"><strong>注意：</strong>Day 2 岸上約 8~10 小時，需嚴格控管包車時間，建議保留回港口緩衝。</p>
+          </div>
         </div>
-    </nav>
+      </section>
 
-    <!-- Main Content Container -->
-    <main class="flex-grow max-w-6xl mx-auto w-full px-4 py-6 space-y-6">
+      <!-- 基隆港流程 -->
+      <section id="keelung" aria-labelledby="keelung-title">
+        <h2 id="keelung-title">⚓ 基隆港登船攻略</h2>
 
-        <!-- SECTION 1: DASHBOARD -->
-        <section id="view-dashboard" class="space-y-6 animate-fade-in">
-            <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-[#d4a373]">
-                <h1 class="text-2xl font-bold text-gray-800 mb-2">👋 歡迎來到郵輪-沖繩旅遊筆記</h1>
-                <p class="text-gray-600">針對 2位長者、2位大人、1位兒童 (5歲) 的專屬計畫。此頁面整合了所有重要資訊，請隨時回來查看。</p>
+        <p>目的：針對長輩與小孩最佳化登船流程。</p>
+
+        <div class="card">
+          <h3>登船流程摘要（四段）</h3>
+          <ol>
+            <li>抵達與行李（11:00-12:30）</li>
+            <li>報到領房卡（12:30-13:30）</li>
+            <li>通關與登船（13:30-14:30）</li>
+            <li>離船流程（Day 3）</li>
+          </ol>
+        </div>
+
+        <div class="card">
+          <h3>交通與接送行程</h3>
+
+          <h4>包車接送（搭船）</h4>
+          <ul>
+            <li><strong>交通：</strong>高鐵南港站 → 包車（tripool-旅步）接送直達西岸碼頭</li>
+            <li><strong>時間：</strong>2 月 25 日 10:30</li>
+            <li><strong>聯絡資訊：</strong><span class="muted">（待補）</span></li>
+          </ul>
+
+          <h4>預計：火車（下船）</h4>
+          <p>基隆車站北站出口步行約 5 分鐘，搭乘火車至高鐵南港站。</p>
+
+          <div class="placeholder">
+            <p class="muted">（可選補充）集合點、備援點、雨備、長輩步行注意事項…</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 郵輪設施 -->
+      <section id="ship" aria-labelledby="ship-title">
+        <h2 id="ship-title">探索星號（名勝世界壹號）設施概覽</h2>
+        <p>船上消費幣別：台幣 TWD。</p>
+
+        <div class="card">
+          <h3>重點資訊（做成 tab / 表格 / 區塊）</h3>
+
+          <div class="tabs" role="tablist" aria-label="郵輪設施重點分頁">
+            <button type="button" role="tab" aria-selected="true" aria-controls="tab-food" id="tab-food-btn">餐廳飲食</button>
+            <button type="button" role="tab" aria-selected="false" aria-controls="tab-wifi" id="tab-wifi-btn">WiFi 網路</button>
+            <button type="button" role="tab" aria-selected="false" aria-controls="tab-notes" id="tab-notes-btn">重要注意事項</button>
+            <button type="button" role="tab" aria-selected="false" aria-controls="tab-extra" id="tab-extra-btn">備用欄位</button>
+          </div>
+
+          <div id="tab-food" class="tab-panel" role="tabpanel" aria-labelledby="tab-food-btn">
+            <p class="muted">（資料暫時不變）你可以把「餐廳清單/營業時間/費用/是否需預約」整理成表格或卡片。</p>
+            <div class="placeholder">
+              <p class="muted">（待你貼入餐廳飲食資料）</p>
             </div>
+          </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Checklist Widget -->
-                <div class="bg-white p-6 rounded-xl card-shadow">
-                    <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center"><span class="mr-2">📋</span> 出發前必備清單</h2>
-                    <div class="space-y-3" id="checklist-container">
-                        <!-- JS generated items -->
-                    </div>
-                </div>
+          <!-- WiFi：已補入完整表格資料 -->
+          <div id="tab-wifi" class="tab-panel" role="tabpanel" aria-labelledby="tab-wifi-btn" hidden>
+            <p class="muted">WiFi 方案價格（新台幣 NTD）：</p>
 
-                <!-- Quick Summary -->
-                <div class="bg-white p-6 rounded-xl card-shadow">
-                    <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center"><span class="mr-2">🛳️</span> 行程概覽</h2>
-                    <div class="space-y-4 text-sm">
-                        <div class="flex justify-between border-b pb-2">
-                            <span class="text-gray-500">Day 1</span>
-                            <span class="font-medium">基隆港登船 (啟航時間15：00)(報到參考時間11:00~13:00)</span>
-                        </div>
-                        <div class="flex justify-between border-b pb-2">
-                            <span class="text-gray-500">Day 2</span>
-                            <span class="font-medium text-[#d4a373]">沖繩那霸 (抵達時間TW 10:00( JP 11:00)　啟航時間TW 20:00( JP 21:00))</span>
-                        </div>
-                        <div class="flex justify-between border-b pb-2">
-                            <span class="text-gray-500">Day 3</span>
-                            <span class="font-medium">返抵基隆 (抵達時間15:00)</span>
-                        </div>
-                        <div class="bg-yellow-50 p-3 rounded text-xs text-yellow-800 mt-2">
-                            ⚠️ 注意：Day 2 實際岸上時間約僅 8-10 小時，請嚴格控制包車時間。
-                        </div>
-                    </div>
-                </div>
+            <table aria-label="WiFi 方案價格表">
+              <thead>
+                <tr>
+                  <th class="cell-center">方案</th>
+                  <th class="cell-center">網速</th>
+                  <th class="cell-center">設備</th>
+                  <th class="cell-center">兩晚</th>
+                  <th class="cell-center">三晚</th>
+                  <th class="cell-center">五晚</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td rowspan="4" class="cell-center">標準</td>
+                  <td rowspan="4" class="cell-center">基本</td>
+                  <td class="cell-center">一台</td>
+                  <td class="cell-center">NTD 490</td>
+                  <td class="cell-center">NTD 735</td>
+                  <td class="cell-center">NTD 1,225</td>
+                </tr>
+                <tr>
+                  <td class="cell-center">兩台</td>
+                  <td class="cell-center">NTD 906</td>
+                  <td class="cell-center">NTD 1,359</td>
+                  <td class="cell-center">NTD 2,265</td>
+                </tr>
+                <tr>
+                  <td class="cell-center">三台</td>
+                  <td class="cell-center">NTD 1,238</td>
+                  <td class="cell-center">NTD 1,857</td>
+                  <td class="cell-center">NTD 3,095</td>
+                </tr>
+                <tr>
+                  <td class="cell-center">四台</td>
+                  <td class="cell-center">NTD 1,578</td>
+                  <td class="cell-center">NTD 2,367</td>
+                  <td class="cell-center">NTD 3,945</td>
+                </tr>
+
+                <tr>
+                  <td rowspan="4" class="cell-center">尊貴</td>
+                  <td rowspan="4" class="cell-center">良好</td>
+                  <td class="cell-center">一台</td>
+                  <td class="cell-center">NTD 714</td>
+                  <td class="cell-center">NTD 1,071</td>
+                  <td class="cell-center">NTD 1,785</td>
+                </tr>
+                <tr>
+                  <td class="cell-center">兩台</td>
+                  <td class="cell-center">NTD 1,288</td>
+                  <td class="cell-center">NTD 1,932</td>
+                  <td class="cell-center">NTD 3,220</td>
+                </tr>
+                <tr>
+                  <td class="cell-center">三台</td>
+                  <td class="cell-center">NTD 1,810</td>
+                  <td class="cell-center">NTD 2,715</td>
+                  <td class="cell-center">NTD 4,525</td>
+                </tr>
+                <tr>
+                  <td class="cell-center">四台</td>
+                  <td class="cell-center">NTD 2,384</td>
+                  <td class="cell-center">NTD 3,576</td>
+                  <td class="cell-center">NTD 5,960</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p class="muted">（提示）若你最後確定住幾晚，我也可以幫你加「自動高亮對應欄位」或「估算合計」。</p>
+          </div>
+
+          <div id="tab-notes" class="tab-panel" role="tabpanel" aria-labelledby="tab-notes-btn" hidden>
+            <p class="muted">（資料暫時不變）可放：登船注意、用餐規範、甲板安全、長輩活動建議、醫務室資訊等。</p>
+            <div class="placeholder">
+              <p class="muted">（待補）</p>
             </div>
-        </section>
+          </div>
 
-        <!-- SECTION 2: PORT (KEELUNG) -->
-        <section id="view-port" class="hidden space-y-6">
-            <div class="bg-white p-6 rounded-xl card-shadow">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">⚓ 基隆港登船攻略</h2>
-                <p class="text-gray-600 mb-6">對於長輩與小孩，登船流程是最累人的部分。以下是針對您們人數配置的最佳化建議。</p>
-
-                <!-- Interactive Timeline Step Viewer -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="lg:col-span-1 space-y-2">
-                        <button onclick="setPortStep(0)" class="w-full text-left p-4 rounded-lg bg-[#d4a373] text-white font-bold port-step-btn">1. 抵達與行李 (預估11:00-12:30)</button>
-                        <button onclick="setPortStep(1)" class="w-full text-left p-4 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 port-step-btn">2. 報到領房卡 (預估12:30-13:30)</button>
-                        <button onclick="setPortStep(2)" class="w-full text-left p-4 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 port-step-btn">3. 通關與登船 (預估13:30-14:30)</button>
-                        <button onclick="setPortStep(3)" class="w-full text-left p-4 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 port-step-btn">4. 離船流程 (Day 3)</button>
-                    </div>
-                    
-                    <div class="lg:col-span-2 bg-gray-50 p-6 rounded-xl border border-gray-200">
-                        <div id="port-step-content">
-                            <!-- Dynamic Content -->
-                        </div>
-                    </div>
-                </div>
+          <div id="tab-extra" class="tab-panel" role="tabpanel" aria-labelledby="tab-extra-btn" hidden>
+            <p class="muted">（留空，資料待補）例如：緊急聯絡資訊、集合點、每日行程公告截圖、船上地圖連結等。</p>
+            <div class="placeholder">
+              <p class="muted">（待補）</p>
             </div>
+          </div>
 
-            <!-- Transport Info -->
-            <div class="bg-white p-6 rounded-xl card-shadow">
-                <h3 class="text-xl font-bold text-gray-800 mb-4">🚗 交通與接送建議</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="p-4 bg-blue-50 rounded-lg">
-                        <h4 class="font-bold text-blue-800 mb-2">自行開車/包車接送 (推薦)</h4>
-                        <p class="text-sm text-blue-700">因有長輩與小孩，強烈建議預約「到府接送」直達基隆港務大樓 (通常為西岸旅客碼頭，請依船票確認)。</p>
-                        <p class="text-sm text-blue-700 mt-2">若自行開車，最近停車場為「基隆港西岸旅客中心停車場」，但常客滿。替代方案：基隆火車站南站停車場。</p>
-                    </div>
-                    <div class="p-4 bg-orange-50 rounded-lg">
-                        <h4 class="font-bold text-orange-800 mb-2">火車/客運</h4>
-                        <p class="text-sm text-orange-700">搭乘火車至「基隆車站」南站出口，步行約 5-10 分鐘可達西岸碼頭。對於70歲長者與5歲小孩，這段路程若遇下雨會較辛苦。</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+          <!-- 你指定刪除：船上消費預算估計（整段不放） -->
+        </div>
+      </section>
 
-        <!-- SECTION 3: SHIP INFO -->
-        <section id="view-ship" class="hidden space-y-6">
-            <div class="bg-white p-6 rounded-xl card-shadow">
-                <h2 class="text-2xl font-bold text-gray-800 mb-2">🚢 探索星號 (名勝世界壹號) 設施概覽</h2>
-                <p class="text-gray-600 mb-6">船上消費全以「台幣 (TWD)」計價。以下整理最關鍵的飲食與網路資訊。</p>
+      <!-- 沖繩包車資訊 -->
+      <section id="charter" aria-labelledby="charter-title">
+        <h2 id="charter-title">沖繩那霸：舒適包車一日遊</h2>
 
-                <!-- Tabs within Ship Section -->
-                <div class="flex space-x-2 mb-4 overflow-x-auto no-scrollbar pb-2">
-                    <button onclick="filterShipInfo('dining')" class="bg-gray-800 text-white px-4 py-2 rounded-full text-sm whitespace-nowrap">🍽️ 餐廳飲食</button>
-                    <button onclick="filterShipInfo('wifi')" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm whitespace-nowrap">📶 WiFi 網路</button>
-                    <button onclick="filterShipInfo('tips')" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm whitespace-nowrap">💡 重要注意事項</button>
-                    <button onclick="filterShipInfo('ub')" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm whitespace-nowrap">💡 備用欄位</button>
-                </div>
+        <div class="card">
+          <h3>包車</h3>
+          <p><strong>行腳沖繩</strong></p>
 
-                <div id="ship-content-area" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <!-- Dynamic Cards injected here -->
-                </div>
-            </div>
-            
-             <!-- Budget Chart -->
-             <div class="bg-white p-6 rounded-xl card-shadow">
-                <h3 class="text-lg font-bold text-gray-800 mb-4">💰 船上消費預算估計 (5人)</h3>
-                <div class="flex flex-col md:flex-row items-center">
-                    <div class="w-full md:w-1/2">
-                        <div class="chart-container">
-                            <canvas id="budgetChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="w-full md:w-1/2 mt-4 md:mt-0 md:pl-8">
-                        <ul class="space-y-2 text-sm text-gray-600">
-                            <li><strong>服務費 (必繳):</strong> 每人每晚約 $ TWD (視房型)。3天2夜 = $  x 2晚 x 5人 = $ TWD。</li>
-                            <li><strong>WiFi (選購):</strong> 如何購買：登船後可直接連接船上 WiFi 網頁購買，或至 7 樓船中的服務櫃檯（接待中心） 辦理，費用會直接記在房卡帳單中，下船前結清即可。建議買2個裝置分享，約 $ 490TWD/晚。</li>
-                            <li><strong>付費餐廳/飲料:</strong> 預留 $  TWD 享受一頓特色餐。</li>
-                            <li class="pt-2 font-bold text-[#d4a373]">總預計需準備信用卡額度: 約 $3,000 TWD</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
+          <h3>包車資訊：6 人座車型</h3>
+          <ul>
+            <li><strong>車型：</strong>Alphard（或同級車）</li>
+            <li><strong>包車時間：</strong>8 小時（中文司機）</li>
+            <li><strong>費用：</strong>38,000 日圓/天（約台幣 8,000）</li>
+            <li><strong>兒童座椅：</strong>5 歲（須加購，mail 備註）</li>
+          </ul>
 
-        <!-- SECTION 4: OKINAWA (CORE) -->
-        <section id="view-okinawa" class="hidden space-y-8">
-            <!-- Intro -->
-            <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-[#d4a373]">
-                <h2 class="text-2xl font-bold text-gray-800">🌺 沖繩那霸：舒適包車一日遊</h2>
-                <p class="mt-2 text-gray-600">因有長輩與幼童，且郵輪停靠時間短 (約 JP 11:00-21:00，實際僅 8-10 小時)，**「包車」是唯一推薦**。請勿嘗試搭乘單軌電車或計程車轉乘，會消耗長輩過多體力。</p>
-            </div>
+          <h4>注意事項</h4>
+          <ul>
+            <li>天氣原因郵輪出發但無法登陸岸上，可免費取消。</li>
+            <li>除飲用水之外車內不能飲食；若必須飲食請先徵求司機同意。</li>
+            <li>司機訊息會在出行前一天以 LINE 聯繫。</li>
+            <li>超時 1 小時為 3,000 日幣。</li>
+          </ul>
 
-            <!-- Charter Info -->
-            <div class="bg-white p-6 rounded-xl card-shadow">
-                <h3 class="text-xl font-bold text-gray-800 mb-4">🚐 包車建議：7-10人座車型</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <ul class="space-y-3 text-sm text-gray-700">
-                            <li class="flex items-start"><span class="text-green-500 mr-2">✓</span> <strong>推薦車型:</strong> Toyota Alphard (最舒適) 或 Toyota Hiace (空間大)。雖然5人可坐WISH，但加上長輩舒適度與隨身採買物品，7人座以上最佳。</li>
-                            <li class="flex items-start"><span class="text-green-500 mr-2">✓</span> <strong>包車時間:</strong> 建議預訂 8-10 小時 (配合船班)。</li>
-                            <li class="flex items-start"><span class="text-green-500 mr-2">✓</span> <strong>費用預估:</strong> 7人座約 30,000~45,000 日圓/天。</li>
-                            <li class="flex items-start"><span class="text-green-500 mr-2">✓</span> <strong>兒童座椅:</strong> 日本法規嚴格，5歲兒童**必須**預約兒童增高墊或安全座椅。</li>
-                        </ul>
-                    </div>
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <h4 class="font-bold text-red-600 text-sm mb-2">⚠️ 訂購與取消注意事項</h4>
-                        <p class="text-xs text-gray-600 mb-2">郵輪可能因海象改變停靠港口或時間，請務必尋找「可免費取消」或「因郵輪停駛可全額退費」的包車公司。</p>
-                        <p class="text-xs text-gray-600"><strong>推薦平台:</strong> Klook, KKday (需看清楚退改條款), 或沖繩當地的華人包車行 (溝通無礙)。</p>
-                    </div>
-                </div>
-            </div>
+          <div class="placeholder">
+            <p class="muted">（待補）聯絡資訊、集合點、備援點、回港口緩衝規則…</p>
+          </div>
+        </div>
+      </section>
 
-            <!-- Interactive Map/List -->
-            <div class="space-y-4">
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <h3 class="text-xl font-bold text-gray-800">📍 精選景點 (依離港口距離排序)</h3>
-                    <div class="mt-2 md:mt-0 flex space-x-2">
-                        <select id="spot-filter" onchange="filterSpots()" class="border border-gray-300 rounded-lg px-3 py-1 text-sm bg-white">
-                            <option value="all">顯示全部</option>
-                            <option value="near">近距離 (<20分)</option>
-                            <option value="mid">中距離 (20-40分)</option>
-                            <option value="shopping">購物</option>
-                            <option value="culture">文化 & 神社</option>
-                            <option value="nature">自然 & 景觀</option>
-                        </select>
-                    </div>
-                </div>
+      <!-- 行程景點 -->
+      <section id="spots" aria-labelledby="spots-title">
+        <h2 id="spots-title">精選景點（依行程排序）</h2>
 
-                <!-- Distance Chart -->
-                 <div class="bg-white p-4 rounded-xl card-shadow">
-                    <p class="text-xs text-gray-500 mb-2 text-center">📊 車程時間預估 (單程) - 請注意回程塞車風險</p>
-                    <div class="chart-container h-48">
-                        <canvas id="distanceChart"></canvas>
-                    </div>
-                 </div>
+        <article class="card" id="spot-1">
+          <h3>行程 1：波上宮</h3>
+          <dl>
+            <dt><strong>Google Map</strong></dt><dd class="muted">（資料待補）</dd>
+            <dt><strong>餐食</strong></dt><dd class="muted">（資料待補）</dd>
+            <dt><strong>車程時間預估</strong></dt><dd class="muted">（資料待補）</dd>
+          </dl>
+        </article>
 
-                <!-- Spot List -->
-                <div id="spots-container" class="grid grid-cols-1 gap-4">
-                    <!-- Dynamic Spot Cards -->
-                </div>
-            </div>
-        </section>
+        <article class="card" id="spot-2">
+          <h3>行程 2：玉泉洞</h3>
+          <dl>
+            <dt><strong>Google Map</strong></dt><dd class="muted">（資料待補）</dd>
+            <dt><strong>餐食</strong></dt><dd class="muted">（資料待補）</dd>
+            <dt><strong>車程時間預估</strong></dt><dd class="muted">（資料待補）</dd>
+          </dl>
+        </article>
 
-    </main>
+        <article class="card" id="spot-3">
+          <h3>行程 3：瀨長島</h3>
+          <dl>
+            <dt><strong>Google Map</strong></dt><dd class="muted">（資料待補）</dd>
+            <dt><strong>餐食</strong></dt><dd class="muted">（資料待補）</dd>
+            <dt><strong>車程時間預估</strong></dt><dd class="muted">（資料待補）</dd>
+          </dl>
+        </article>
 
-    <footer class="bg-gray-800 text-gray-400 py-6 text-center text-sm mt-8">
-        <p>© 2024 Family Trip Guide - 祝旅途愉快</p>
-        <p class="text-xs mt-1">資料僅供參考，實際時間請依當日路況與郵輪公告為準。</p>
-    </footer>
+        <article class="card" id="spot-4">
+          <h3>行程 4：國際通（時間允許）</h3>
+          <dl>
+            <dt><strong>Google Map</strong></dt><dd class="muted">（資料待補）</dd>
+            <dt><strong>餐食</strong></dt><dd class="muted">（資料待補）</dd>
+            <dt><strong>車程時間預估</strong></dt><dd class="muted">（資料待補）</dd>
+          </dl>
+        </article>
 
-    <!-- JavaScript Logic -->
-    <script>
-        // --- Data: Port Timeline ---
-        const portSteps = [
-            {
-                title: "1. 抵達與行李托運 (建議 10:30)",
-                content: `<ul class="list-disc pl-5 space-y-2 text-gray-700">
-                    <li><strong>地點:</strong> 基隆港西岸旅客中心 (請確認船票)。</li>
-                    <li><strong>行李:</strong> 在一樓行李托運處。請將大件行李交寄，只留隨身包包。</li>
-                    <li><strong>長輩提醒:</strong> 托運處人多，建議讓長輩在旁邊休息區等候，由壯丁處理行李。</li>
-                    <li><strong>標籤:</strong> 務必確認行李條已綁好，並寫上正確房號。</li>
-                </ul>`
-            },
-            {
-                title: "2. 報到領房卡 (12:30)",
-                content: `<ul class="list-disc pl-5 space-y-2 text-gray-700">
-                    <li><strong>地點:</strong> 2樓報到大廳。</li>
-                    <li><strong>證件:</strong> 護照正本 + 護照影本 (A4大小，不縮放) + 船票。</li>
-                    <li><strong>重要:</strong> 5人需一起報到。櫃台會收取護照正本 (保管至離船前)，並發放「房卡」。</li>
-                    <li><strong>房卡功能:</strong> 即是身分證、信用卡、鑰匙。請幫小孩保管好。</li>
-                </ul>`
-            },
-            {
-                title: "3. 通關與登船 (13:30)",
-                content: `<ul class="list-disc pl-5 space-y-2 text-gray-700">
-                    <li><strong>流程:</strong> 安檢 -> 移民署證照查驗 -> 免稅店區 -> 登船口。</li>
-                    <li><strong>拍照:</strong> 登船時船方會幫每人拍照 (人臉辨識用)。</li>
-                    <li><strong>上船後:</strong> 先去房間放隨身物品，然後直接去餐廳吃下午茶 (通常14:00開始供應)，避開稍後的用餐人潮。</li>
-                </ul>`
-            },
-            {
-                title: "4. 離船流程 (Day 3)",
-                content: `<ul class="list-disc pl-5 space-y-2 text-gray-700">
-                    <li><strong>結帳:</strong> 前一晚建議先去服務台結清帳單，或使用自助結帳機，以免下船當天排隊過久。</li>
-                    <li><strong>領護照:</strong> 依廣播指定地點領回護照正本 (通常是 Day 3 早上)。</li>
-                    <li><strong>行李:</strong> 若趕時間，建議「自行攜帶行李下船」(不托運)，可最早批次離船。若托運，需前一晚放在房門口。</li>
-                </ul>`
-            }
-        ];
+        <article class="card" id="spot-5">
+          <h3>行程 5：回港口（時間不夠 / 回程緩衝）</h3>
+          <dl>
+            <dt><strong>車程時間預估</strong></dt>
+            <dd class="muted">（資料待補）</dd>
+          </dl>
+          <p class="note"><strong>提醒：</strong>建議保留回港口緩衝時間（塞車、停車、集合走路時間）。</p>
+        </article>
 
-        // --- Data: Spots (15 items) ---
-        const okinawaSpots = [
-            {
-                id: 1, name: "波上宮 & 海灘", distance: 10, type: "culture",
-                desc: "沖繩八大神社之首，懸崖上的紅瓦神社，非常有氣勢。旁邊就是海灘，適合小孩踩沙。無障礙設施完善，長輩好走。",
-                food: [
-                    { name: "Jack's Steak House", time: "步行 8 分", type: "牛排 (老字號)", rating: "Google 4.3 / Tabelog 3.58" },
-                    { name: "Okinawa Soba EIBUN", time: "步行 12 分 (稍遠)", type: "沖繩麵 (文青風)", rating: "Google 4.4 / Tabelog 3.56" },
-                    { name: "88 Steak House (辻本店)", time: "步行 5 分", type: "牛排 (家庭式)", rating: "Google 4.0 / Tabelog 3.25" }
-                ]
-            },
-            {
-                id: 2, name: "國際通 (Kokusai Dori)", distance: 15, type: "shopping",
-                desc: "最熱鬧的購物街。建議直接包車停在「唐吉軻德」附近。長輩若累了可找咖啡廳休息，小孩可逛伴手禮店。",
-                food: [
-                    { name: "暖暮拉麵 (那霸店)", time: "步行 3 分", type: "拉麵", rating: "Google 4.1 / Tabelog 3.39" },
-                    { name: "Steak House 88 (國際通店)", time: "步行 1 分", type: "牛排", rating: "Google 4.2 / Tabelog 3.28" },
-                    { name: "御菓子御殿", time: "步行 5 分", type: "甜點/紅芋塔", rating: "Google 4.3" }
-                ]
-            },
-            {
-                id: 3, name: "第一牧志公設市場", distance: 15, type: "culture",
-                desc: "體驗當地生活，一樓買海鮮、二樓代客料理。2023年剛翻新，環境乾淨，有電梯，非常適合帶長輩用餐。",
-                food: [
-                    { name: "道敦堀 (市場2F)", time: "步行 0 分", type: "海鮮料理", rating: "Google 4.0" },
-                    { name: "Pork Tamago Onigiri", time: "步行 2 分", type: "豬肉蛋飯糰 (排隊名店)", rating: "Google 4.4" }
-                ]
-            },
-            {
-                id: 4, name: "DFS T Galleria 免稅店", distance: 20, type: "shopping",
-                desc: "名牌精品免稅店。若長輩不愛逛精品，可直接前往旁邊的「Naha Main Place」超市百貨，那裡更生活化。",
-                food: [
-                    { name: "彥 (Hiko)", time: "步行 5 分 (Main Place內)", type: "鰻魚飯/懷石", rating: "Google 4.2" },
-                    { name: "和風亭", time: "步行 5 分 (Main Place內)", type: "日式定食", rating: "Google 4.0" }
-                ]
-            },
-            {
-                id: 5, name: "瀨長島 Umikaji Terrace", distance: 25, type: "nature",
-                desc: "希臘風格的白色階梯商場，看飛機起降與海景絕佳。注意：階梯多，需確認長輩膝蓋狀況，或利用坡道。",
-                food: [
-                    { name: "幸福鬆餅 (Shiawase no Pancake)", time: "步行 2 分", type: "舒芙蕾鬆餅", rating: "Google 4.3 / Tabelog 3.49" },
-                    { name: "Taco Rice Cafe Kijimuna", time: "步行 3 分", type: "塔可飯", rating: "Google 4.2" }
-                ]
-            },
-            {
-                id: 6, name: "首里城公園 (Shurijo Castle)", distance: 30, type: "culture",
-                desc: "世界遺產。雖然正殿修復中，但守禮門與周邊公園仍值得一看。無障礙路線規劃良好。",
-                food: [
-                    { name: "琉球茶房 Ashibiuna", time: "步行 5 分", type: "沖繩料理 (庭園景觀)", rating: "Google 4.4 / Tabelog 3.65" },
-                    { name: "首里そば (Shuri Soba)", time: "步行 6 分", type: "沖繩麵 (名店)", rating: "Google 4.3 / Tabelog 3.72" }
-                ]
-            },
-            {
-                id: 7, name: "港川外人住宅區", distance: 35, type: "shopping",
-                desc: "美軍老宿舍改建的文青小店區，街道平坦好走，適合拍照與吃甜點。oHacorte 水果塔本店在此。",
-                food: [
-                    { name: "oHacorte", time: "步行 1 分", type: "水果塔", rating: "Google 4.4" },
-                    { name: "Ippe Coppe", time: "步行 2 分", type: "天然酵母麵包", rating: "Google 4.5" }
-                ]
-            },
-            {
-                id: 8, name: "PARCO CITY 浦添西海岸", distance: 35, type: "shopping",
-                desc: "最新最大海景百貨。冷氣強、走道寬敞、無障礙設施完美。若遇到下雨，這裡是最佳備案。",
-                food: [
-                    { name: "敘敘苑燒肉", time: "百貨內", type: "高級燒肉 (海景)", rating: "Google 4.5" },
-                    { name: "博多天布羅 貴博", time: "百貨內", type: "天婦羅", rating: "Google 4.1" }
-                ]
-            },
-            {
-                id: 9, name: "美國村 (American Village)", distance: 45, type: "shopping",
-                desc: "充滿美式風情，色彩繽紛。日落海灘看夕陽很美。範圍很大，建議鎖定「Depot Island」區域。",
-                food: [
-                    { name: "迴轉壽司市場 美浜店", time: "步行 5 分", type: "迴轉壽司", rating: "Google 4.1 / Tabelog 3.48" },
-                    { name: "A&W Burger", time: "步行 3 分", type: "美式漢堡", rating: "Google 4.0" },
-                    { name: "Pork Tamago Onigiri (北谷店)", time: "步行 2 分", type: "飯糰", rating: "Google 4.3" }
-                ]
-            },
-            {
-                id: 10, name: "永旺夢樂城 (Aeon Mall Rycom)", distance: 50, type: "shopping",
-                desc: "沖繩最大型購物中心之一，有超大水族箱。適合全家採買，美食街選擇極多。",
-                food: [
-                    { name: "Waraku (和樂)", time: "4F", type: "迴轉壽司", rating: "Google 4.0" },
-                    { name: "Rose Garden", time: "5F", type: "西式料理", rating: "Google 4.1" }
-                ]
-            },
-            {
-                id: 11, name: "沖繩世界 (玉泉洞)", distance: 50, type: "culture",
-                desc: "壯觀的鐘乳石洞與太鼓表演。注意：玉泉洞內地面濕滑且階梯多，若長輩行動不便，建議只在地面園區看表演。",
-                food: [
-                    { name: "園區自助餐", time: "園區內", type: "沖繩料理吃到飽", rating: "Google 3.8" },
-                    { name: "Cave Cafe", time: "對面", type: "鐘乳石洞咖啡", rating: "Google 4.2" }
-                ]
-            },
-            {
-                id: 12, name: "殘波岬燈塔", distance: 60, type: "nature",
-                desc: "斷崖絕壁海景。風大請注意保暖。若時間緊迫(少於6小時)，建議捨棄此點。",
-                food: [
-                    { name: "Royal Hotel Zanpamisaki", time: "車程 3 分", type: "飯店自助餐", rating: "Google 4.0" }
-                ]
-            },
-            {
-                id: 13, name: "萬座毛", distance: 65, type: "nature",
-                desc: "象鼻岩景觀。新蓋了遊客中心，設施變好了。但距離港口較遠，來回需抓2.5小時車程。",
-                food: [
-                    { name: "三矢本舖", time: "車程 5 分", type: "薩塔安達基(炸球)", rating: "Google 4.4" }
-                ]
-            },
-            {
-                id: 14, name: "美麗海水族館 (太遠)", distance: 100, type: "nature",
-                desc: "⚠️ 警告：單程需2小時，來回4小時。對於郵輪半日遊風險極高，不建議前往，除非包車司機保證時間。",
-                food: []
-            },
-            {
-                id: 15, name: "古宇利島 (太遠)", distance: 110, type: "nature",
-                desc: "⚠️ 警告：太遠。若遇上塞車會趕不上船。強烈建議留在中南部旅遊。",
-                food: []
-            }
-        ];
+        <div class="placeholder">
+          <p class="muted">（可選）之後加上「每站停留分鐘 / 集合點文字 / 備援點」會更像一份可直接給司機的路線卡。</p>
+        </div>
+      </section>
 
-        // --- Data: Checklist ---
-        const checklistItems = [
-            "護照正本 (有效期6個月以上)",
-            "護照 A4 影本 x 2份 (報到與免稅用)",
-            "船票 (電子檔或列印)",
-            "信用卡 (Visa/Master，船上綁定用)",
-            "個人常備藥品 (暈船藥、感冒藥等)",
-            "日本上網 SIM 卡或漫遊開通",
-            "舒適好走的鞋子",
-            "薄外套 (船上冷氣強)"
-        ];
+    </div>
+  </main>
 
-        // --- Data: Ship Info ---
-        const shipInfos = {
-            dining: [
-                { title: "麗都自助餐 (The Lido)", type: "免費", desc: "位於12樓船中。提供多國料理的自助餐（Buffet），菜色種類最多，包含沙拉、熱食、甜點、水果等。自由取餐、宵夜時段也有開放" },
-                { title: "星夢餐廳 (Dream Dining)", type: "免費", desc: "位於6樓船尾，空間較大，提供西式或中式套餐（Set Menu）。早餐評價不錯，午晚餐通常是配好的套餐，若食量大可以加點主餐或特定菜色。" },
-                { title: "百味軒 (Pavilion)", type: "免費", desc: "位於6樓船中，裝潢偏中式，提供中式合菜或西式套餐。可以單點喜歡的前菜或主餐多吃幾份。" },
-                { title: "絲路花舞 (Silk Road)", type: "付費", desc: "位於7樓，精緻中式料理與港式點心，裝潢帶有復古舞廳感。早餐時段有提供付費的港式飲茶套餐。" },
-                { title: "藍湖美食 (Blue Lagoon)", type: "付費", desc: "位於7樓船中（大廳旁），供東南亞與中式料理，如肉骨茶、沙嗲、牛肉麵、炒粿條等。營業時間最長（通常僅凌晨 4-6 點休息）" },
-                { title: "火鍋 (Hot Pot)", type: "付費", desc: "位於8樓船尾，提供鴛鴦鍋與自助夾取的蔬菜、火鍋料，適合喜歡喝熱湯的旅客。" },
-                { title: "義大利披薩餐廳 (Mozzarella Ristorante & Pizzeria)", type: "付費", desc: "位於7樓，提供現烤披薩（餅皮有嚼勁）與義大利麵。" },
-                { title: "海馬日本料理 / 鐵板燒 (Umi Uma)", type: "付費", desc: "位於8樓船尾，提供日式定食、壽司與鐵板燒。鐵板燒座位極少，建議一上船就預約。" },
-                { title: "免費餐廳規則", type: "注意", desc: "同一餐期通常只能選擇一間免費餐廳用餐，若去第二間可能會被刷卡收費。" },
-                { title: "查看菜單", type: "注意", desc: "可以透過船上的 App 或餐廳門口的電子看板，先查看當天的菜單再決定要去哪一間吃。" },
-                { title: "隱藏版宵夜", type: "注意", desc: "賭場內在深夜時段（約 11 點後）有時會提供免費的限量泡麵與檸檬水。" }
-            ],
-            wifi: [
-                { title: "標準方案", type: "付費", desc: "僅限社交軟體 (Line, FB, IG)。無法流暢看影片。單台約 TWD 245/晚。" },
-                { title: "尊榮方案", type: "付費", desc: "可看影片 (YouTube, Netflix)。網速較快。單台約 TWD 490/晚。" },
-                { title: "建議", type: "Tip", desc: "單日購買的單價較高，若您有高度網路需求，建議一上船就購買整趟航程的方案。建議「買2個裝置」共享給5人用，主要用於聯繫，不用每人都買。" }
-            ],
-            tips: [
-                { title: "台式插座電壓", type: "注意", desc: "房間內配有「中式插座」（通常指兩孔扁插），也就是台灣電器的插頭可以直接插入，不需要轉接頭。" },
-                { title: "英式插座電壓", type: "注意", desc: "房間內也有配備英式（港式）的三腳扁型插座，需要轉接頭。" },
-                { title: "電壓", type: "注意", desc: "船上的電壓為 220V - 240V，目前的 3C 產品充電器通常支援國際電壓（100V-240V），可以直接攜帶台灣的手機充電器去充電。" },
-                { title: "USB 插孔", type: "注意", desc: "房間書桌處配有 USB 充電孔（Type-A，即傳統長方形的那種），建議自備轉接頭或 USB-A 的充電線。" },
-                { title: "飲用水", type: "注意", desc: "房間內瓶裝水免費，喝完可請房務補。船上提供多處免費的飲用水源，建議您可以攜帶保溫瓶或水壺以便裝水回房間飲用。" },
-                { title: "暈船", type: "健康", desc: "沖繩航線通常平穩，但建議第一晚睡前先吃暈船藥預防。" }
-            ],
-            ub: [
-                { title: "-", type: "注意", desc: "-。" },
-                { title: "-", type: "注意", desc: "-。" },
-                { title: "-", type: "注意", desc: "-。" },
-                { title: "-", type: "注意", desc: "-。" },
-                { title: "-", type: "注意", desc: "-。" },
-                { title: "-", type: "健康", desc: "-。" }
-            ]
-        };
+  <footer>
+    <div class="container">
+      <p>© 2026 Family Trip Guide</p>
+    </div>
+  </footer>
 
-        // --- State Management ---
-        let state = {
-            activeTab: 'dashboard',
-            portStep: 0,
-            spotFilter: 'all'
-        };
+  <script>
+    /**
+     * Checklist: localStorage 記憶勾選狀態
+     */
+    const CHECKLIST_STORAGE_KEY = "familyTripChecklist_v1";
 
-        // --- Initialization ---
-        document.addEventListener('DOMContentLoaded', () => {
-            renderChecklist();
-            renderPortStep();
-            renderShipInfo('dining'); // Default
-            renderSpots();
-            initCharts();
+    // --- Data: Checklist ---
+    const checklistItems = [
+      "日幣現金",
+      "護照正本 (有效期6個月以上)",
+      "護照 A4 影本 x 2份 (報到與免稅用)",
+      "船票 (電子檔或列印)",
+      "信用卡 (Visa/Master，船上綁定用)",
+      "個人常備藥品 (暈船藥、感冒藥等)",
+      "日本網路漫遊開通",
+      "舒適好走的鞋子",
+      "薄外套"
+    ];
+
+    function loadChecklistState() {
+      try {
+        return JSON.parse(localStorage.getItem(CHECKLIST_STORAGE_KEY) || "{}");
+      } catch {
+        return {};
+      }
+    }
+
+    function saveChecklistState(state) {
+      localStorage.setItem(CHECKLIST_STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function renderChecklist() {
+      const checklistEl = document.getElementById("checklist");
+      if (!checklistEl) return;
+
+      const state = loadChecklistState();
+      checklistEl.innerHTML = "";
+
+      checklistItems.forEach((text, index) => {
+        const id = `check-${index}`;
+        const li = document.createElement("li");
+        li.className = "checklist-item";
+
+        const label = document.createElement("label");
+        label.setAttribute("for", id);
+
+        const input = document.createElement("input");
+        input.type = "checkbox";
+        input.id = id;
+        input.checked = !!state[id];
+
+        const span = document.createElement("span");
+        span.textContent = text;
+
+        input.addEventListener("change", (e) => {
+          state[id] = e.target.checked;
+          saveChecklistState(state);
         });
 
-        // --- Core Functions ---
+        label.appendChild(input);
+        label.appendChild(span);
+        li.appendChild(label);
+        checklistEl.appendChild(li);
+      });
+    }
 
-        function switchTab(tabId) {
-            // Update State
-            state.activeTab = tabId;
+    /**
+     * Tabs：原生切換（不引入框架）
+     */
+    function setupTabs() {
+      const tabButtons = Array.from(document.querySelectorAll('[role="tab"]'));
+      if (tabButtons.length === 0) return;
 
-            // UI Updates: Hide all sections, show active
-            ['dashboard', 'port', 'ship', 'okinawa'].forEach(id => {
-                const section = document.getElementById(`view-${id}`);
-                const btn = document.getElementById(`nav-${id}`);
-                if (id === tabId) {
-                    section.classList.remove('hidden');
-                    btn.classList.replace('tab-inactive', 'tab-active');
-                } else {
-                    section.classList.add('hidden');
-                    btn.classList.replace('tab-active', 'tab-inactive');
-                }
-            });
-            
-            // Close mobile menu if open
-            document.getElementById('mobile-menu').classList.add('hidden');
-            
-            // Re-render chart if switching to okinawa or ship (fix canvas sizing issues)
-            if (tabId === 'okinawa' && window.distanceChartInstance) {
-                window.distanceChartInstance.resize();
-            }
-            if (tabId === 'ship' && window.budgetChartInstance) {
-                window.budgetChartInstance.resize();
-            }
-        }
-        
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        }
+      function activateTab(btn) {
+        const targetId = btn.getAttribute("aria-controls");
+        const panels = Array.from(document.querySelectorAll('[role="tabpanel"]'));
 
-        // --- Dashboard Render ---
-        function renderChecklist() {
-            const container = document.getElementById('checklist-container');
-            container.innerHTML = checklistItems.map(item => `
-                <div class="flex items-center">
-                    <input type="checkbox" class="w-5 h-5 text-[#d4a373] rounded border-gray-300 focus:ring-[#d4a373]">
-                    <span class="ml-3 text-gray-700">${item}</span>
-                </div>
-            `).join('');
-        }
+        tabButtons.forEach(b => b.setAttribute("aria-selected", b === btn ? "true" : "false"));
+        panels.forEach(p => {
+          const isTarget = p.id === targetId;
+          p.hidden = !isTarget;
+        });
 
-        // --- Port Render ---
-        function setPortStep(index) {
-            state.portStep = index;
-            renderPortStep();
-        }
+        btn.focus();
+      }
 
-        function renderPortStep() {
-            // Update buttons styling
-            document.querySelectorAll('.port-step-btn').forEach((btn, idx) => {
-                if (idx === state.portStep) {
-                    btn.className = "w-full text-left p-4 rounded-lg bg-[#d4a373] text-white font-bold port-step-btn shadow-md transform scale-105 transition-transform";
-                } else {
-                    btn.className = "w-full text-left p-4 rounded-lg bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 port-step-btn";
-                }
-            });
+      tabButtons.forEach(btn => {
+        btn.addEventListener("click", () => activateTab(btn));
+        btn.addEventListener("keydown", (e) => {
+          const idx = tabButtons.indexOf(btn);
+          if (e.key === "ArrowRight") {
+            e.preventDefault();
+            activateTab(tabButtons[(idx + 1) % tabButtons.length]);
+          } else if (e.key === "ArrowLeft") {
+            e.preventDefault();
+            activateTab(tabButtons[(idx - 1 + tabButtons.length) % tabButtons.length]);
+          }
+        });
+      });
+    }
 
-            // Update Content
-            const data = portSteps[state.portStep];
-            document.getElementById('port-step-content').innerHTML = `
-                <h3 class="text-xl font-bold text-gray-800 mb-4 animate-fade-in">${data.title}</h3>
-                <div class="prose animate-fade-in">${data.content}</div>
-            `;
-        }
-
-        // --- Ship Render ---
-        function filterShipInfo(category) {
-            // Update buttons
-            const buttons = document.querySelectorAll('#view-ship button');
-            buttons.forEach(btn => {
-                // --- 修正開始 ---
-                // 原本是檢查文字內容 (textContent)，現在改為檢查 onclick 屬性
-                // 只要按鈕的指令中包含現在選到的 category (例如 'ub')，就設為啟用狀態
-                const isMatch = btn.getAttribute('onclick').includes(`'${category}'`);
-                
-                if(isMatch) {
-                    btn.classList.remove('bg-gray-200', 'text-gray-700');
-                    btn.classList.add('bg-gray-800', 'text-white');
-                } else {
-                    btn.classList.add('bg-gray-200', 'text-gray-700');
-                    btn.classList.remove('bg-gray-800', 'text-white');
-                }
-                // --- 修正結束 ---
-            });
-            renderShipInfo(category);
-        }
-
-        function renderShipInfo(category) {
-            const container = document.getElementById('ship-content-area');
-            const data = shipInfos[category];
-            
-            container.innerHTML = data.map(item => `
-                <div class="bg-gray-50 p-5 rounded-lg border border-gray-200 hover:border-[#d4a373] transition-colors">
-                    <div class="flex justify-between items-start mb-2">
-                        <h4 class="font-bold text-lg text-gray-800">${item.title}</h4>
-                        <span class="text-xs font-bold px-2 py-1 rounded ${item.type === '免費' ? 'bg-green-100 text-green-800' : item.type === '付費' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}">${item.type}</span>
-                    </div>
-                    <p class="text-sm text-gray-600">${item.desc}</p>
-                </div>
-            `).join('');
-        }
-
-        // --- Okinawa Render ---
-        function filterSpots() {
-            state.spotFilter = document.getElementById('spot-filter').value;
-            renderSpots();
-        }
-
-        function renderSpots() {
-            const container = document.getElementById('spots-container');
-            const filter = state.spotFilter;
-            
-            let filteredData = okinawaSpots.filter(spot => {
-                if (filter === 'all') return true;
-                if (filter === 'near') return spot.distance < 20;
-                if (filter === 'mid') return spot.distance >= 20 && spot.distance <= 40;
-                return spot.type === filter;
-            });
-
-            // Warn if far
-            filteredData.forEach(spot => {
-                spot.warning = spot.distance > 60;
-            });
-
-            container.innerHTML = filteredData.map(spot => `
-                <div class="bg-white p-5 rounded-xl border border-gray-200 card-shadow flex flex-col md:flex-row gap-4 ${spot.warning ? 'opacity-75' : ''}">
-                    <div class="flex-grow">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="bg-[#d4a373] text-white text-xs font-bold px-2 py-1 rounded">約 ${spot.distance} 分鐘</span>
-                            <h4 class="text-lg font-bold text-gray-800">${spot.name}</h4>
-                            ${spot.warning ? '<span class="text-red-500 text-xs font-bold">⚠️ 距離過遠</span>' : ''}
-                        </div>
-                        <p class="text-sm text-gray-600 mb-3">${spot.desc}</p>
-                        
-                        <!-- Food Section -->
-                        <div class="bg-gray-50 p-3 rounded-lg">
-                            <h5 class="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">附近美食 (步行10分內)</h5>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                                ${spot.food.length > 0 ? spot.food.map(f => `
-                                    <div class="text-xs border-l-2 border-gray-300 pl-2">
-                                        <div class="font-bold text-gray-700">${f.name}</div>
-                                        <div class="text-gray-500">${f.type} • ${f.time}</div>
-                                        <div class="text-orange-400">★ ${f.rating}</div>
-                                    </div>
-                                `).join('') : '<span class="text-xs text-gray-400">無推薦資料</span>'}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // --- Chart.js Implementations ---
-        function initCharts() {
-            // 1. Distance Chart (Bar)
-            const ctxDist = document.getElementById('distanceChart').getContext('2d');
-            
-            // Prepare Data: Filter out the "Too Far" ones for better visualization of viable options
-            const chartSpots = okinawaSpots.filter(s => s.distance <= 100);
-            
-            window.distanceChartInstance = new Chart(ctxDist, {
-                type: 'bar',
-                data: {
-                    labels: chartSpots.map(s => s.name.substring(0, 6) + (s.name.length>6?'...':'')),
-                    datasets: [{
-                        label: '單程車行時間 (分鐘)',
-                        data: chartSpots.map(s => s.distance),
-                        backgroundColor: chartSpots.map(s => s.distance > 45 ? '#f87171' : s.distance > 25 ? '#fbbf24' : '#34d399'),
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true, title: { display: true, text: '分鐘' } },
-                        x: { ticks: { maxRotation: 45, minRotation: 45, font: { size: 10 } } }
-                    },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `單程約 ${context.raw} 分鐘`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            // 2. Budget Chart (Doughnut)
-            const ctxBudget = document.getElementById('budgetChart').getContext('2d');
-            window.budgetChartInstance = new Chart(ctxBudget, {
-                type: 'doughnut',
-                data: {
-                    labels: ['郵輪服務費 (必繳)', '包車分攤 (每人)', '船上消費 (預估)', '岸上餐飲購物'],
-                    datasets: [{
-                        data: [1300, 300, 200, 1000], // HKD estimates per person roughly converted or relative
-                        backgroundColor: ['#9ca3af', '#d4a373', '#fcd34d', '#60a5fa'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'right', labels: { boxWidth: 12, font: { size: 11 } } },
-                        title: { display: true, text: '單人預算比例示意' }
-                    }
-                }
-            });
-        }
-
-        // Tailwind Config for Animations
-        tailwind.config = {
-            theme: {
-                extend: {
-                    animation: {
-                        'fade-in': 'fadeIn 0.5s ease-out',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0', transform: 'translateY(10px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    // init
+    renderChecklist();
+    setupTabs();
+  </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
