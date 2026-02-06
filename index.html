@@ -157,6 +157,7 @@
                     <button onclick="filterShipInfo('dining')" class="bg-gray-800 text-white px-4 py-2 rounded-full text-sm whitespace-nowrap">🍽️ 餐廳飲食</button>
                     <button onclick="filterShipInfo('wifi')" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm whitespace-nowrap">📶 WiFi 網路</button>
                     <button onclick="filterShipInfo('tips')" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm whitespace-nowrap">💡 重要注意事項</button>
+                    <button onclick="filterShipInfo('ub')" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm whitespace-nowrap">💡 備用欄位</button>
                 </div>
 
                 <div id="ship-content-area" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -443,9 +444,20 @@
                 { title: "建議", type: "Tip", desc: "單日購買的單價較高，若您有高度網路需求，建議一上船就購買整趟航程的方案。建議「買2個裝置」共享給5人用，主要用於聯繫，不用每人都買。" }
             ],
             tips: [
-                { title: "插座電壓", type: "注意", desc: "船上主要為英式三孔 (三角扁型) 或 兩孔圓型。務必攜帶「萬國轉接頭」。" },
-                { title: "飲用水", type: "注意", desc: "房間內瓶裝水免費，喝完可請房務補。餐廳熱水免費。" },
+                { title: "台式插座電壓", type: "注意", desc: "房間內配有「中式插座」（通常指兩孔扁插），也就是台灣電器的插頭可以直接插入，不需要轉接頭。" },
+                { title: "英式插座電壓", type: "注意", desc: "房間內也有配備英式（港式）的三腳扁型插座，需要轉接頭。" },
+                { title: "電壓", type: "注意", desc: "船上的電壓為 220V - 240V，目前的 3C 產品充電器通常支援國際電壓（100V-240V），可以直接攜帶台灣的手機充電器去充電。" },
+                { title: "USB 插孔", type: "注意", desc: "房間書桌處配有 USB 充電孔（Type-A，即傳統長方形的那種），建議自備轉接頭或 USB-A 的充電線。" },
+                { title: "飲用水", type: "注意", desc: "房間內瓶裝水免費，喝完可請房務補。船上提供多處免費的飲用水源，建議您可以攜帶保溫瓶或水壺以便裝水回房間飲用。" },
                 { title: "暈船", type: "健康", desc: "沖繩航線通常平穩，但建議第一晚睡前先吃暈船藥預防。" }
+            ],
+            : [
+                { title: "-", type: "注意", desc: "-。" },
+                { title: "-", type: "注意", desc: "-。" },
+                { title: "-", type: "注意", desc: "-。" },
+                { title: "-", type: "注意", desc: "-。" },
+                { title: "-", type: "注意", desc: "-。" },
+                { title: "-", type: "健康", desc: "-。" }
             ]
         };
 
@@ -698,6 +710,7 @@
     </script>
 </body>
 </html>
+
 
 
 
