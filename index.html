@@ -553,13 +553,19 @@
             // Update buttons
             const buttons = document.querySelectorAll('#view-ship button');
             buttons.forEach(btn => {
-               if(btn.textContent.includes(category === 'dining' ? '餐廳' : category === 'wifi' ? 'WiFi' : '注意')) {
-                   btn.classList.remove('bg-gray-200', 'text-gray-700');
-                   btn.classList.add('bg-gray-800', 'text-white');
-               } else {
-                   btn.classList.add('bg-gray-200', 'text-gray-700');
-                   btn.classList.remove('bg-gray-800', 'text-white');
-               }
+                // --- 修正開始 ---
+                // 原本是檢查文字內容 (textContent)，現在改為檢查 onclick 屬性
+                // 只要按鈕的指令中包含現在選到的 category (例如 'ub')，就設為啟用狀態
+                const isMatch = btn.getAttribute('onclick').includes(`'${category}'`);
+                
+                if(isMatch) {
+                    btn.classList.remove('bg-gray-200', 'text-gray-700');
+                    btn.classList.add('bg-gray-800', 'text-white');
+                } else {
+                    btn.classList.add('bg-gray-200', 'text-gray-700');
+                    btn.classList.remove('bg-gray-800', 'text-white');
+                }
+                // --- 修正結束 ---
             });
             renderShipInfo(category);
         }
@@ -710,6 +716,7 @@
     </script>
 </body>
 </html>
+
 
 
 
