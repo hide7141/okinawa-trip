@@ -21,21 +21,26 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* Ship pills active/inactive */
+    /* Ship pills */
     .pill { transition: all .15s ease; }
     .pill-active { background: #d4a373; color: #fff; box-shadow: 0 6px 16px rgba(212,163,115,.25); }
     .pill-inactive { background: #e5e7eb; color: #374151; }
     .pill-inactive:hover { background: #d1d5db; }
 
-    /* Port step list active/inactive */
+    /* Port step list */
     .step-item { transition: all .15s ease; }
     .step-active { border-color: #d4a373; background: #fff7ed; }
     .step-active .step-index { background: #d4a373; color: #fff; }
     .step-inactive { border-color: #e5e7eb; background: #fff; }
     .step-inactive:hover { background: #f9fafb; }
-    .step-index { width: 28px; height: 28px; border-radius: 999px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size: 12px; background:#f3f4f6; color:#6b7280; }
+    .step-index {
+      width: 28px; height: 28px; border-radius: 999px;
+      display:flex; align-items:center; justify-content:center;
+      font-weight:700; font-size: 12px;
+      background:#f3f4f6; color:#6b7280;
+      flex: 0 0 auto;
+    }
 
-    /* Table */
     table { border-collapse: collapse; }
   </style>
 </head>
@@ -53,26 +58,26 @@
 
         <!-- Desktop Tabs -->
         <div class="hidden md:flex space-x-8">
-          <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-active py-5 px-2 transition-colors duration-200">總覽 & 清單</button>
-          <button onclick="switchTab('port')" id="nav-port" class="tab-inactive py-5 px-2 transition-colors duration-200">基隆港流程</button>
-          <button onclick="switchTab('ship')" id="nav-ship" class="tab-inactive py-5 px-2 transition-colors duration-200">郵輪設施</button>
-          <button onclick="switchTab('charter')" id="nav-charter" class="tab-inactive py-5 px-2 transition-colors duration-200">沖繩包車資訊</button>
-          <button onclick="switchTab('spots')" id="nav-spots" class="tab-inactive py-5 px-2 transition-colors duration-200">行程景點</button>
+          <button type="button" onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-active py-5 px-2 transition-colors duration-200">總覽 & 清單</button>
+          <button type="button" onclick="switchTab('port')" id="nav-port" class="tab-inactive py-5 px-2 transition-colors duration-200">基隆港流程</button>
+          <button type="button" onclick="switchTab('ship')" id="nav-ship" class="tab-inactive py-5 px-2 transition-colors duration-200">郵輪設施</button>
+          <button type="button" onclick="switchTab('charter')" id="nav-charter" class="tab-inactive py-5 px-2 transition-colors duration-200">沖繩包車資訊</button>
+          <button type="button" onclick="switchTab('spots')" id="nav-spots" class="tab-inactive py-5 px-2 transition-colors duration-200">行程景點</button>
         </div>
 
         <!-- Mobile Menu Button -->
-        <button onclick="toggleMobileMenu()" class="md:hidden text-gray-500 focus:outline-none">
+        <button type="button" onclick="toggleMobileMenu()" class="md:hidden text-gray-500 focus:outline-none" aria-label="開啟選單">
           <span class="text-2xl">☰</span>
         </button>
       </div>
 
       <!-- Mobile Menu -->
       <div id="mobile-menu" class="hidden md:hidden pb-4">
-        <button onclick="switchTab('dashboard')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">總覽 & 清單</button>
-        <button onclick="switchTab('port')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">基隆港流程</button>
-        <button onclick="switchTab('ship')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">郵輪設施</button>
-        <button onclick="switchTab('charter')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">沖繩包車資訊</button>
-        <button onclick="switchTab('spots')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">行程景點</button>
+        <button type="button" onclick="switchTab('dashboard')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">總覽 & 清單</button>
+        <button type="button" onclick="switchTab('port')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">基隆港流程</button>
+        <button type="button" onclick="switchTab('ship')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">郵輪設施</button>
+        <button type="button" onclick="switchTab('charter')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">沖繩包車資訊</button>
+        <button type="button" onclick="switchTab('spots')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">行程景點</button>
       </div>
     </div>
   </nav>
@@ -109,7 +114,7 @@
       </div>
     </section>
 
-    <!-- 2: PORT (圖1需求：左選單 + 右內容) -->
+    <!-- 2: PORT (圖1：左選單 + 右內容) -->
     <section id="view-port" class="hidden space-y-8">
       <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-[#d4a373]">
         <h2 class="text-2xl font-bold text-gray-800 flex items-center">
@@ -128,9 +133,7 @@
 
         <!-- Right detail panel -->
         <div class="bg-white p-6 rounded-xl card-shadow">
-          <div id="port-step-detail">
-            <!-- rendered by JS -->
-          </div>
+          <div id="port-step-detail"></div>
         </div>
       </div>
 
@@ -159,7 +162,7 @@
       </div>
     </section>
 
-    <!-- 3: SHIP (圖2需求：tabs 高亮 + WiFi 表格隨畫面延展) -->
+    <!-- 3: SHIP (圖2：tabs 高亮 + WiFi 表格自動延展) -->
     <section id="view-ship" class="hidden space-y-8">
       <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-[#d4a373]">
         <h2 class="text-2xl font-bold text-gray-800 flex items-center">
@@ -171,18 +174,15 @@
       <div class="bg-white p-6 rounded-xl card-shadow">
         <h3 class="text-xl font-bold text-gray-800 mb-4">重點資訊（tab / 表格 / 區塊）</h3>
 
-        <!-- Pills: active highlight -->
+        <!-- Pills -->
         <div class="flex space-x-2 overflow-x-auto no-scrollbar pb-2" id="ship-pill-bar">
-          <button data-cat="dining" onclick="filterShipInfo('dining')" class="pill pill-active px-4 py-2 rounded-full text-sm whitespace-nowrap">🍽️ 餐廳飲食</button>
-          <button data-cat="wifi" onclick="filterShipInfo('wifi')" class="pill pill-inactive px-4 py-2 rounded-full text-sm whitespace-nowrap">📶 WiFi 網路</button>
-          <button data-cat="tips" onclick="filterShipInfo('tips')" class="pill pill-inactive px-4 py-2 rounded-full text-sm whitespace-nowrap">💡 重要注意事項</button>
-          <button data-cat="ub" onclick="filterShipInfo('ub')" class="pill pill-inactive px-4 py-2 rounded-full text-sm whitespace-nowrap">🧩 備用欄位</button>
+          <button type="button" data-cat="dining" onclick="filterShipInfo('dining')" class="pill pill-active px-4 py-2 rounded-full text-sm whitespace-nowrap">🍽️ 餐廳飲食</button>
+          <button type="button" data-cat="wifi" onclick="filterShipInfo('wifi')" class="pill pill-inactive px-4 py-2 rounded-full text-sm whitespace-nowrap">📶 WiFi 網路</button>
+          <button type="button" data-cat="tips" onclick="filterShipInfo('tips')" class="pill pill-inactive px-4 py-2 rounded-full text-sm whitespace-nowrap">💡 重要注意事項</button>
+          <button type="button" data-cat="ub" onclick="filterShipInfo('ub')" class="pill pill-inactive px-4 py-2 rounded-full text-sm whitespace-nowrap">🧩 備用欄位</button>
         </div>
 
-        <!-- Content area -->
         <div id="ship-content-area" class="mt-4 space-y-4"></div>
-
-        <!-- 你指定刪除：船上消費預算估計（此段不放） -->
       </div>
     </section>
 
@@ -215,16 +215,8 @@
               <li>司機訊息會在出行前一天以 LINE 聯繫。</li>
               <li>超時 1 小時為 3,000 日幣。</li>
             </ul>
-            <div class="mt-3 text-xs text-gray-600">
-              <strong>聯絡資訊：</strong><span class="text-gray-400">（待補）</span>
-            </div>
           </div>
         </div>
-      </div>
-
-      <div class="bg-white p-6 rounded-xl card-shadow">
-        <h3 class="text-xl font-bold text-gray-800 mb-2">🧩 建議補充欄位（可選）</h3>
-        <p class="text-sm text-gray-600">例如：集合點文字、上車點定位、備援點（塞車/景點關閉）、回港口緩衝規則。</p>
       </div>
     </section>
 
@@ -253,32 +245,6 @@
             <div class="bg-gray-50 p-3 rounded-lg border"><strong>車程時間預估：</strong><span class="text-gray-400">（資料待補）</span></div>
           </div>
         </div>
-
-        <div class="bg-white p-6 rounded-xl card-shadow">
-          <h3 class="text-lg font-bold text-gray-800">行程 3：瀨長島</h3>
-          <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
-            <div class="bg-gray-50 p-3 rounded-lg border"><strong>Google Map：</strong><span class="text-gray-400">（資料待補）</span></div>
-            <div class="bg-gray-50 p-3 rounded-lg border"><strong>餐食：</strong><span class="text-gray-400">（資料待補）</span></div>
-            <div class="bg-gray-50 p-3 rounded-lg border"><strong>車程時間預估：</strong><span class="text-gray-400">（資料待補）</span></div>
-          </div>
-        </div>
-
-        <div class="bg-white p-6 rounded-xl card-shadow">
-          <h3 class="text-lg font-bold text-gray-800">行程 4：國際通（時間允許）</h3>
-          <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
-            <div class="bg-gray-50 p-3 rounded-lg border"><strong>Google Map：</strong><span class="text-gray-400">（資料待補）</span></div>
-            <div class="bg-gray-50 p-3 rounded-lg border"><strong>餐食：</strong><span class="text-gray-400">（資料待補）</span></div>
-            <div class="bg-gray-50 p-3 rounded-lg border"><strong>車程時間預估：</strong><span class="text-gray-400">（資料待補）</span></div>
-          </div>
-        </div>
-
-        <div class="bg-white p-6 rounded-xl card-shadow">
-          <h3 class="text-lg font-bold text-gray-800">行程 5：回港口（時間不夠 / 回程緩衝）</h3>
-          <div class="mt-3 bg-yellow-50 p-3 rounded-lg border border-yellow-200 text-sm text-gray-700">
-            <strong>車程時間預估：</strong><span class="text-gray-400">（資料待補）</span>
-            <p class="mt-2 text-xs text-gray-600"><strong>提醒：</strong>建議保留回港口緩衝（塞車、停車、集合走路時間）。</p>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -301,7 +267,7 @@
     };
 
     // -----------------------------
-    // Data: Checklist (localStorage)
+    // Checklist (localStorage)
     // -----------------------------
     const checklistItems = [
       "日幣現金",
@@ -347,22 +313,24 @@
     }
 
     // -----------------------------
-    // UI: Mobile menu
+    // Mobile menu
     // -----------------------------
     function toggleMobileMenu() {
       const menu = document.getElementById('mobile-menu');
-      menu.classList.toggle('hidden');
+      if (menu) menu.classList.toggle('hidden');
     }
 
     // -----------------------------
-    // Core: top tabs
+    // Top tabs
     // -----------------------------
     function switchTab(tabId) {
       state.activeTab = tabId;
 
-      ['dashboard', 'port', 'ship', 'charter', 'spots'].forEach(id => {
+      const ids = ['dashboard', 'port', 'ship', 'charter', 'spots'];
+      ids.forEach(id => {
         const section = document.getElementById(`view-${id}`);
         const btn = document.getElementById(`nav-${id}`);
+        if (!section || !btn) return;
 
         if (id === tabId) {
           section.classList.remove('hidden');
@@ -381,11 +349,14 @@
 
       // ensure renders for sections that need JS
       if (tabId === 'port') renderPortSteps();
-      if (tabId === 'ship') { setShipPillActive(state.shipCategory); renderShipInfo(state.shipCategory); }
+      if (tabId === 'ship') {
+        setShipPillActive(state.shipCategory);
+        renderShipInfo(state.shipCategory);
+      }
     }
 
     // -----------------------------
-    // PORT: selectable list + detail (圖1)
+    // PORT (圖1)
     // -----------------------------
     const portSteps = [
       {
@@ -393,9 +364,9 @@
         time: "11:00-12:30",
         summary: "抵達碼頭、托運/整理行李、確認證件與資料。",
         details: [
-          "建議 10:30 前抵達（有長輩/小孩可多預留緩衝）。",
+          "建議 10:30 前抵達（長輩/小孩多預留緩衝）。",
           "先確認：護照正本、船票、護照影本等是否齊全。",
-          "行李：可先分出「隨身包」與「托運/交寄」物品。",
+          "行李：分出「隨身包」與「托運/交寄」物品。",
           "如遇雨天：備妥雨具，優先顧及長輩步行安全。"
         ]
       },
@@ -406,7 +377,7 @@
         details: [
           "準備：護照、船票/訂位資料、（必要時）影本。",
           "船上消費通常會綁定信用卡（Visa/Master）。",
-          "領到房卡後：確認房號、用餐時段（若有）、集合須知。"
+          "領到房卡後：確認房號、集合須知等。"
         ]
       },
       {
@@ -414,9 +385,9 @@
         time: "13:30-14:30",
         summary: "通關檢查、安檢後登船，確認動線與集合點。",
         details: [
-          "依現場指示排隊通關；長輩/小孩可留意優先通道（若有）。",
-          "登船後建議先熟悉：電梯位置、餐廳、醫務室、集合點。",
-          "如有 WiFi/付費服務需求，可先確認購買地點與方式。"
+          "依現場指示排隊通關；留意優先通道（若有）。",
+          "登船後熟悉：電梯、餐廳、醫務室、集合點。",
+          "若有 WiFi/付費服務需求，先確認購買方式。"
         ]
       },
       {
@@ -425,8 +396,8 @@
         summary: "返抵基隆後依指示下船、領取行李、銜接交通。",
         details: [
           "依船方公告的下船批次與指示行動。",
-          "確認隨身物品完整：房卡、手機、護照、充電器等。",
-          "下船後按既定計畫搭火車回南港（雨備/備援也可先規劃）。"
+          "確認隨身物品：房卡、手機、護照、充電器等。",
+          "下船後按既定計畫搭火車回南港。"
         ]
       }
     ];
@@ -436,13 +407,11 @@
       const detailEl = document.getElementById('port-step-detail');
       if (!listEl || !detailEl) return;
 
-      // left list
       listEl.innerHTML = portSteps.map((s, idx) => {
         const isActive = idx === state.portStepIndex;
         return `
           <button type="button"
-            class="step-item w-full text-left border rounded-xl p-4 flex gap-3 items-start ${n
-                   ${isActive ? 'step-active' : 'step-inactive'}"
+            class="step-item w-full text-left border rounded-xl p-4 flex gap-3 items-start ${isActive ? 'step-active' : 'step-inactive'}"
             onclick="selectPortStep(${idx})">
             <div class="step-index">${idx + 1}</div>
             <div class="flex-1">
@@ -456,25 +425,26 @@
         `;
       }).join('');
 
-      // right detail
       const s = portSteps[state.portStepIndex];
       detailEl.innerHTML = `
-        <div class="border-l-4 border-[#d4a373] bg-white rounded-xl">
-          <div class="flex items-start gap-3">
-            <div class="text-2xl">🧾</div>
-            <div class="flex-1">
-              <h3 class="text-xl font-bold text-gray-800">${s.title}</h3>
-              <p class="text-sm text-gray-500 mt-1">${s.time}</p>
-              <p class="text-sm text-gray-700 mt-3">${s.summary}</p>
+        <div class="border-l-4 border-[#d4a373] bg-white rounded-xl p-1">
+          <div class="p-4">
+            <div class="flex items-start gap-3">
+              <div class="text-2xl">🧾</div>
+              <div class="flex-1">
+                <h3 class="text-xl font-bold text-gray-800">${s.title}</h3>
+                <p class="text-sm text-gray-500 mt-1">${s.time}</p>
+                <p class="text-sm text-gray-700 mt-3">${s.summary}</p>
 
-              <div class="mt-4 bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <div class="font-bold text-gray-800 text-sm mb-2">完整內容</div>
-                <ul class="list-disc pl-5 space-y-2 text-sm text-gray-700">
-                  ${s.details.map(x => `<li>${x}</li>`).join('')}
-                </ul>
+                <div class="mt-4 bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <div class="font-bold text-gray-800 text-sm mb-2">完整內容</div>
+                  <ul class="list-disc pl-5 space-y-2 text-sm text-gray-700">
+                    ${s.details.map(x => `<li>${x}</li>`).join('')}
+                  </ul>
+                </div>
+
+                <p class="mt-4 text-xs text-gray-500">（你可在 <code>portSteps</code> 裡補充更多細節或改文字。）</p>
               </div>
-
-              <p class="mt-4 text-xs text-gray-500">（你可在 <code>portSteps</code> 裡補充更多細節或改文字。）</p>
             </div>
           </div>
         </div>
@@ -487,7 +457,7 @@
     }
 
     // -----------------------------
-    // SHIP: pills active + content (圖2)
+    // SHIP (圖2)
     // -----------------------------
     function setShipPillActive(category) {
       const bar = document.getElementById('ship-pill-bar');
@@ -553,7 +523,6 @@
         return;
       }
 
-      // WiFi (圖2：表格可隨畫面延展)
       if (category === 'wifi') {
         container.innerHTML = `
           <div class="bg-white rounded-xl border border-gray-200 p-5">
@@ -649,7 +618,7 @@
     // -----------------------------
     document.addEventListener('DOMContentLoaded', () => {
       renderChecklist();
-      renderPortSteps();                // 先建立 port 區（即使一開始不顯示也沒差）
+      renderPortSteps();
       setShipPillActive(state.shipCategory);
       renderShipInfo(state.shipCategory);
     });
