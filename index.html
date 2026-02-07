@@ -1,483 +1,658 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FamilyVoyage 沖繩3天2夜 | 5人家族行</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FamilyVoyage 沖繩3天2夜 | 5人家族行</title>
 
-    <!-- 舊版 UI 的基底：Tailwind + 字體（保留你的設計感） -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <!-- 舊版 UI 基底 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-    <style>
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #fdfbf7; color: #4a4a4a; }
-        .card-shadow { box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
-        .tab-active { border-bottom: 3px solid #d4a373; color: #d4a373; font-weight: 700; }
-        .tab-inactive { border-bottom: 3px solid transparent; color: #6b7280; }
-        .chart-container { position: relative; height: 220px; }
+  <style>
+    body { font-family: 'Noto Sans TC', sans-serif; background-color: #fdfbf7; color: #4a4a4a; }
+    .card-shadow { box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
 
-        /* hide scrollbar for horizontal pill tabs */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    </style>
+    /* Top nav tabs */
+    .tab-active { border-bottom: 3px solid #d4a373; color: #d4a373; font-weight: 700; }
+    .tab-inactive { border-bottom: 3px solid transparent; color: #6b7280; }
+
+    /* Horizontal pill tabs */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Ship pills active/inactive */
+    .pill { transition: all .15s ease; }
+    .pill-active { background: #d4a373; color: #fff; box-shadow: 0 6px 16px rgba(212,163,115,.25); }
+    .pill-inactive { background: #e5e7eb; color: #374151; }
+    .pill-inactive:hover { background: #d1d5db; }
+
+    /* Port step list active/inactive */
+    .step-item { transition: all .15s ease; }
+    .step-active { border-color: #d4a373; background: #fff7ed; }
+    .step-active .step-index { background: #d4a373; color: #fff; }
+    .step-inactive { border-color: #e5e7eb; background: #fff; }
+    .step-inactive:hover { background: #f9fafb; }
+    .step-index { width: 28px; height: 28px; border-radius: 999px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size: 12px; background:#f3f4f6; color:#6b7280; }
+
+    /* Table */
+    table { border-collapse: collapse; }
+  </style>
 </head>
 
-<body class="bg-[#fdfbf7] min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col">
 
-    <!-- Navigation -->
-    <nav class="sticky top-0 z-50 bg-white shadow-sm border-b border-[#e5e5e5]">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="flex justify-between items-center h-16">
-                <div class="font-bold text-xl text-[#d4a373] tracking-wide">
-                    FamilyVoyage
-                    <span class="text-xs text-gray-400 block sm:inline font-normal">沖繩3天2夜 | 5人家族行</span>
-                </div>
-
-                <!-- Desktop Tabs -->
-                <div class="hidden md:flex space-x-8">
-                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-active py-5 px-2 transition-colors duration-200">總覽 & 清單</button>
-                    <button onclick="switchTab('port')" id="nav-port" class="tab-inactive py-5 px-2 transition-colors duration-200">基隆港流程</button>
-                    <button onclick="switchTab('ship')" id="nav-ship" class="tab-inactive py-5 px-2 transition-colors duration-200">郵輪設施</button>
-                    <button onclick="switchTab('charter')" id="nav-charter" class="tab-inactive py-5 px-2 transition-colors duration-200">沖繩包車資訊</button>
-                    <button onclick="switchTab('spots')" id="nav-spots" class="tab-inactive py-5 px-2 transition-colors duration-200">行程景點</button>
-                </div>
-
-                <!-- Mobile Menu Button -->
-                <button onclick="toggleMobileMenu()" class="md:hidden text-gray-500 focus:outline-none">
-                    <span class="text-2xl">☰</span>
-                </button>
-            </div>
-
-            <!-- Mobile Menu -->
-            <div id="mobile-menu" class="hidden md:hidden pb-4">
-                <button onclick="switchTab('dashboard')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">總覽 & 清單</button>
-                <button onclick="switchTab('port')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">基隆港流程</button>
-                <button onclick="switchTab('ship')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">郵輪設施</button>
-                <button onclick="switchTab('charter')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">沖繩包車資訊</button>
-                <button onclick="switchTab('spots')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">行程景點</button>
-            </div>
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-white shadow-sm border-b border-[#e5e5e5]">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="flex justify-between items-center h-16">
+        <div class="font-bold text-xl text-[#d4a373] tracking-wide">
+          FamilyVoyage
+          <span class="text-xs text-gray-400 block sm:inline font-normal">沖繩3天2夜 | 5人家族行</span>
         </div>
-    </nav>
 
-    <main class="flex-grow max-w-6xl mx-auto px-4 py-6 space-y-6">
-
-        <!-- 1: DASHBOARD -->
-        <section id="view-dashboard" class="space-y-8">
-            <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-[#d4a373]">
-                <h2 class="text-2xl font-bold text-gray-800">歡迎來到麗星郵輪-沖繩旅遊筆記</h2>
-                <p class="mt-2 text-gray-600">針對 2 位長者、2 位大人、1 位兒童（5 歲）的專屬計畫。此頁整合所有重要資訊，方便隨時回來查看。</p>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Checklist -->
-                <div class="bg-white p-6 rounded-xl card-shadow">
-                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center"><span class="mr-2">📋</span> 出發前必備清單</h2>
-                    <div class="space-y-3" id="checklist-container">
-                        <!-- JS generated items -->
-                    </div>
-                    <p class="mt-4 text-xs text-gray-500">✔ 勾選狀態會自動儲存（重新整理不會消失）</p>
-                </div>
-
-                <!-- Itinerary Overview -->
-                <div class="bg-white p-6 rounded-xl card-shadow">
-                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center"><span class="mr-2">🗓️</span> 行程概覽</h2>
-                    <ul class="list-disc pl-5 space-y-2 text-gray-700 text-sm">
-                        <li><strong>Day 1：</strong>基隆港登船（啟航 15:00；報到 11:00~13:00）</li>
-                        <li><strong>Day 2：</strong>沖繩那霸（抵達 TW 10:00 / JP 11:00；啟航 TW 20:00 / JP 21:00）</li>
-                        <li><strong>Day 3：</strong>返抵基隆（抵達 15:00）</li>
-                    </ul>
-                    <div class="mt-4 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-                        <p class="text-sm text-gray-700"><strong>注意：</strong>Day 2 岸上約 8~10 小時，需嚴格控管包車時間，建議保留回港口緩衝。</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 2: PORT -->
-        <section id="view-port" class="hidden space-y-8">
-            <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-[#d4a373]">
-                <h2 class="text-2xl font-bold text-gray-800">⚓ 基隆港登船攻略</h2>
-                <p class="mt-2 text-gray-600">目的：針對長輩與小孩最佳化登船流程。</p>
-            </div>
-
-            <div class="bg-white p-6 rounded-xl card-shadow">
-                <h3 class="text-xl font-bold text-gray-800 mb-4">登船流程摘要（四段）</h3>
-                <ol class="list-decimal pl-5 space-y-2 text-sm text-gray-700">
-                    <li>抵達與行李（11:00-12:30）</li>
-                    <li>報到領房卡（12:30-13:30）</li>
-                    <li>通關與登船（13:30-14:30）</li>
-                    <li>離船流程（Day 3）</li>
-                </ol>
-            </div>
-
-            <div class="bg-white p-6 rounded-xl card-shadow">
-                <h3 class="text-xl font-bold text-gray-800 mb-3">交通與接送行程</h3>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <h4 class="font-bold text-gray-800 mb-2">包車接送（搭船）</h4>
-                        <ul class="list-disc pl-5 space-y-2 text-sm text-gray-700">
-                            <li><strong>交通：</strong>高鐵南港站，包車（tripool-旅步）接送直達西岸碼頭</li>
-                            <li><strong>時間：</strong>2 月 25 日 10:30</li>
-                            <li><strong>聯絡資訊：</strong><span class="text-gray-400">（待補）</span></li>
-                        </ul>
-                    </div>
-
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <h4 class="font-bold text-gray-800 mb-2">預計：火車（下船）</h4>
-                        <p class="text-sm text-gray-700">基隆車站北站出口步行 5 分鐘，搭乘火車至高鐵南港站。</p>
-                        <div class="mt-3 text-xs text-gray-500">
-                            （可選補充）集合點、備援點、雨備、長輩步行注意事項…
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 3: SHIP -->
-        <section id="view-ship" class="hidden space-y-8">
-            <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-[#d4a373]">
-                <h2 class="text-2xl font-bold text-gray-800">🚢 探索星號（名勝世界壹號）設施概覽</h2>
-                <p class="mt-2 text-gray-600">船上消費幣別：台幣 TWD。</p>
-            </div>
-
-            <div class="bg-white p-6 rounded-xl card-shadow">
-                <h3 class="text-xl font-bold text-gray-800 mb-4">重點資訊（tab / 表格 / 區塊）</h3>
-
-                <!-- Pills -->
-                <div class="flex space-x-2 overflow-x-auto no-scrollbar pb-2">
-                    <button onclick="filterShipInfo('dining')" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm whitespace-nowrap">🍽️ 餐廳飲食</button>
-                    <button onclick="filterShipInfo('wifi')" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm whitespace-nowrap">📶 WiFi 網路</button>
-                    <button onclick="filterShipInfo('tips')" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm whitespace-nowrap">💡 重要注意事項</button>
-                    <button onclick="filterShipInfo('ub')" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm whitespace-nowrap">🧩 備用欄位</button>
-                </div>
-
-                <div id="ship-content-area" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-                    <!-- Dynamic Cards injected here -->
-                </div>
-
-                <!-- 你指定刪除：船上消費預算估計（此段不放） -->
-            </div>
-        </section>
-
-        <!-- 4: CHARTER -->
-        <section id="view-charter" class="hidden space-y-8">
-            <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-[#d4a373]">
-                <h2 class="text-2xl font-bold text-gray-800">🚐 沖繩那霸：舒適包車一日遊</h2>
-                <p class="mt-2 text-gray-600">因有長輩與幼童，且岸上時間約 8~10 小時，建議以「包車」為主，避免頻繁轉乘消耗體力。</p>
-            </div>
-
-            <div class="bg-white p-6 rounded-xl card-shadow">
-                <h3 class="text-xl font-bold text-gray-800 mb-4">包車：行腳沖繩</h3>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <h4 class="font-bold text-gray-800 mb-2">包車資訊：6 人座車型</h4>
-                        <ul class="space-y-3 text-sm text-gray-700">
-                            <li class="flex items-start"><span class="text-green-500 mr-2">✓</span> <strong>車型：</strong>Alphard（或同級車）</li>
-                            <li class="flex items-start"><span class="text-green-500 mr-2">✓</span> <strong>包車時間：</strong>8 小時（中文司機）</li>
-                            <li class="flex items-start"><span class="text-green-500 mr-2">✓</span> <strong>費用：</strong>38,000 日圓/天（約台幣 8,000）</li>
-                            <li class="flex items-start"><span class="text-green-500 mr-2">✓</span> <strong>兒童座椅：</strong>5 歲（須加購，mail 備註）</li>
-                        </ul>
-                    </div>
-
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <h4 class="font-bold text-red-600 text-sm mb-2">⚠️ 注意事項</h4>
-                        <ul class="list-disc pl-5 space-y-2 text-xs text-gray-700">
-                            <li>天氣原因郵輪出發但無法登陸岸上，可免費取消。</li>
-                            <li>除飲用水之外車內不能飲食；若必須飲食請先徵求司機同意。</li>
-                            <li>司機訊息會在出行前一天以 LINE 聯繫。</li>
-                            <li>超時 1 小時為 3,000 日幣。</li>
-                        </ul>
-                        <div class="mt-3 text-xs text-gray-600">
-                            <strong>聯絡資訊：</strong><span class="text-gray-400">（待補）</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white p-6 rounded-xl card-shadow">
-                <h3 class="text-xl font-bold text-gray-800 mb-2">🧩 建議補充欄位（可選）</h3>
-                <p class="text-sm text-gray-600">例如：集合點文字、上車點定位、備援點（塞車/景點關閉）、回港口緩衝規則。</p>
-            </div>
-        </section>
-
-        <!-- 5: SPOTS -->
-        <section id="view-spots" class="hidden space-y-8">
-            <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-[#d4a373]">
-                <h2 class="text-2xl font-bold text-gray-800">📍 行程景點（依行程排序）</h2>
-                <p class="mt-2 text-gray-600">先把框架固定，Google Map / 餐食 / 車程時間可逐步補齊。</p>
-            </div>
-
-            <div class="grid grid-cols-1 gap-4">
-                <div class="bg-white p-6 rounded-xl card-shadow">
-                    <h3 class="text-lg font-bold text-gray-800">行程 1：波上宮</h3>
-                    <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
-                        <div class="bg-gray-50 p-3 rounded-lg border"><strong>Google Map：</strong><span class="text-gray-400">（資料待補）</span></div>
-                        <div class="bg-gray-50 p-3 rounded-lg border"><strong>餐食：</strong><span class="text-gray-400">（資料待補）</span></div>
-                        <div class="bg-gray-50 p-3 rounded-lg border"><strong>車程時間預估：</strong><span class="text-gray-400">（資料待補）</span></div>
-                    </div>
-                </div>
-
-                <div class="bg-white p-6 rounded-xl card-shadow">
-                    <h3 class="text-lg font-bold text-gray-800">行程 2：玉泉洞</h3>
-                    <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
-                        <div class="bg-gray-50 p-3 rounded-lg border"><strong>Google Map：</strong><span class="text-gray-400">（資料待補）</span></div>
-                        <div class="bg-gray-50 p-3 rounded-lg border"><strong>餐食：</strong><span class="text-gray-400">（資料待補）</span></div>
-                        <div class="bg-gray-50 p-3 rounded-lg border"><strong>車程時間預估：</strong><span class="text-gray-400">（資料待補）</span></div>
-                    </div>
-                </div>
-
-                <div class="bg-white p-6 rounded-xl card-shadow">
-                    <h3 class="text-lg font-bold text-gray-800">行程 3：瀨長島</h3>
-                    <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
-                        <div class="bg-gray-50 p-3 rounded-lg border"><strong>Google Map：</strong><span class="text-gray-400">（資料待補）</span></div>
-                        <div class="bg-gray-50 p-3 rounded-lg border"><strong>餐食：</strong><span class="text-gray-400">（資料待補）</span></div>
-                        <div class="bg-gray-50 p-3 rounded-lg border"><strong>車程時間預估：</strong><span class="text-gray-400">（資料待補）</span></div>
-                    </div>
-                </div>
-
-                <div class="bg-white p-6 rounded-xl card-shadow">
-                    <h3 class="text-lg font-bold text-gray-800">行程 4：國際通（時間允許）</h3>
-                    <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
-                        <div class="bg-gray-50 p-3 rounded-lg border"><strong>Google Map：</strong><span class="text-gray-400">（資料待補）</span></div>
-                        <div class="bg-gray-50 p-3 rounded-lg border"><strong>餐食：</strong><span class="text-gray-400">（資料待補）</span></div>
-                        <div class="bg-gray-50 p-3 rounded-lg border"><strong>車程時間預估：</strong><span class="text-gray-400">（資料待補）</span></div>
-                    </div>
-                </div>
-
-                <div class="bg-white p-6 rounded-xl card-shadow">
-                    <h3 class="text-lg font-bold text-gray-800">行程 5：回港口（時間不夠 / 回程緩衝）</h3>
-                    <div class="mt-3 bg-yellow-50 p-3 rounded-lg border border-yellow-200 text-sm text-gray-700">
-                        <strong>車程時間預估：</strong><span class="text-gray-400">（資料待補）</span>
-                        <p class="mt-2 text-xs text-gray-600"><strong>提醒：</strong>建議保留回港口緩衝（塞車、停車、集合走路時間）。</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <footer class="bg-white border-t border-[#e5e5e5]">
-        <div class="max-w-6xl mx-auto px-4 py-6 text-sm text-gray-500">
-            © 2026 Family Trip Guide
+        <!-- Desktop Tabs -->
+        <div class="hidden md:flex space-x-8">
+          <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-active py-5 px-2 transition-colors duration-200">總覽 & 清單</button>
+          <button onclick="switchTab('port')" id="nav-port" class="tab-inactive py-5 px-2 transition-colors duration-200">基隆港流程</button>
+          <button onclick="switchTab('ship')" id="nav-ship" class="tab-inactive py-5 px-2 transition-colors duration-200">郵輪設施</button>
+          <button onclick="switchTab('charter')" id="nav-charter" class="tab-inactive py-5 px-2 transition-colors duration-200">沖繩包車資訊</button>
+          <button onclick="switchTab('spots')" id="nav-spots" class="tab-inactive py-5 px-2 transition-colors duration-200">行程景點</button>
         </div>
-    </footer>
 
-    <script>
-        // --- State ---
-        const state = {
-            activeTab: 'dashboard',
-            portIndex: 0,
-            shipCategory: 'dining'
-        };
+        <!-- Mobile Menu Button -->
+        <button onclick="toggleMobileMenu()" class="md:hidden text-gray-500 focus:outline-none">
+          <span class="text-2xl">☰</span>
+        </button>
+      </div>
 
-        // --- Data: Checklist（依你最新提供） ---
-        const checklistItems = [
-            "日幣現金",
-            "護照正本 (有效期6個月以上)",
-            "護照 A4 影本 x 2份 (報到與免稅用)",
-            "船票 (電子檔或列印)",
-            "信用卡 (Visa/Master，船上綁定用)",
-            "個人常備藥品 (暈船藥、感冒藥等)",
-            "日本網路漫遊開通",
-            "舒適好走的鞋子",
-            "薄外套"
-        ];
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="hidden md:hidden pb-4">
+        <button onclick="switchTab('dashboard')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">總覽 & 清單</button>
+        <button onclick="switchTab('port')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">基隆港流程</button>
+        <button onclick="switchTab('ship')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">郵輪設施</button>
+        <button onclick="switchTab('charter')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">沖繩包車資訊</button>
+        <button onclick="switchTab('spots')" class="block w-full text-left py-2 px-4 hover:bg-gray-50">行程景點</button>
+      </div>
+    </div>
+  </nav>
 
-        // --- Data: Ship Info（保留舊 UI 的卡片+分類；wifi 改成表格） ---
-        const shipInfos = {
-            dining: [
-                { title: "餐廳飲食", type: "資訊", desc: "（資料暫時不變）你可以把「餐廳清單/營業時間/費用/是否需預約」整理成表格或卡片後貼在這裡。" }
-            ],
-            wifi: [
-                {
-                    title: "WiFi 方案價格（新台幣 NTD）",
-                    type: "資訊",
-                    html: `
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full text-sm">
-                                <thead>
-                                    <tr class="bg-white">
-                                        <th class="p-2 border text-center">方案</th>
-                                        <th class="p-2 border text-center">網速</th>
-                                        <th class="p-2 border text-center">設備</th>
-                                        <th class="p-2 border text-center">兩晚</th>
-                                        <th class="p-2 border text-center">三晚</th>
-                                        <th class="p-2 border text-center">五晚</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="bg-white">
-                                    <tr>
-                                        <td class="p-2 border text-center" rowspan="4">標準</td>
-                                        <td class="p-2 border text-center" rowspan="4">基本</td>
-                                        <td class="p-2 border text-center">一台</td>
-                                        <td class="p-2 border text-center">NTD 490</td>
-                                        <td class="p-2 border text-center">NTD 735</td>
-                                        <td class="p-2 border text-center">NTD 1,225</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-2 border text-center">兩台</td>
-                                        <td class="p-2 border text-center">NTD 906</td>
-                                        <td class="p-2 border text-center">NTD 1,359</td>
-                                        <td class="p-2 border text-center">NTD 2,265</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-2 border text-center">三台</td>
-                                        <td class="p-2 border text-center">NTD 1,238</td>
-                                        <td class="p-2 border text-center">NTD 1,857</td>
-                                        <td class="p-2 border text-center">NTD 3,095</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-2 border text-center">四台</td>
-                                        <td class="p-2 border text-center">NTD 1,578</td>
-                                        <td class="p-2 border text-center">NTD 2,367</td>
-                                        <td class="p-2 border text-center">NTD 3,945</td>
-                                    </tr>
+  <main class="flex-grow max-w-6xl mx-auto px-4 py-6 space-y-6">
 
-                                    <tr>
-                                        <td class="p-2 border text-center" rowspan="4">尊貴</td>
-                                        <td class="p-2 border text-center" rowspan="4">良好</td>
-                                        <td class="p-2 border text-center">一台</td>
-                                        <td class="p-2 border text-center">NTD 714</td>
-                                        <td class="p-2 border text-center">NTD 1,071</td>
-                                        <td class="p-2 border text-center">NTD 1,785</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-2 border text-center">兩台</td>
-                                        <td class="p-2 border text-center">NTD 1,288</td>
-                                        <td class="p-2 border text-center">NTD 1,932</td>
-                                        <td class="p-2 border text-center">NTD 3,220</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-2 border text-center">三台</td>
-                                        <td class="p-2 border text-center">NTD 1,810</td>
-                                        <td class="p-2 border text-center">NTD 2,715</td>
-                                        <td class="p-2 border text-center">NTD 4,525</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-2 border text-center">四台</td>
-                                        <td class="p-2 border text-center">NTD 2,384</td>
-                                        <td class="p-2 border text-center">NTD 3,576</td>
-                                        <td class="p-2 border text-center">NTD 5,960</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <p class="mt-3 text-xs text-gray-600">提示：若你最後確定住幾晚，可加上「自動高亮欄位」或「合計估算」。</p>
-                    `
-                }
-            ],
-            tips: [
-                { title: "重要注意事項", type: "資訊", desc: "（資料暫時不變）可放：登船注意、用餐規範、甲板安全、長輩活動建議、醫務室資訊等。" }
-            ],
-            ub: [
-                { title: "備用欄位", type: "資訊", desc: "（留空，資料待補）例如：緊急聯絡資訊、集合點、每日行程公告截圖、船上地圖連結等。" }
-            ]
-        };
+    <!-- 1: DASHBOARD -->
+    <section id="view-dashboard" class="space-y-8">
+      <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-[#d4a373]">
+        <h2 class="text-2xl font-bold text-gray-800">歡迎來到麗星郵輪-沖繩旅遊筆記</h2>
+        <p class="mt-2 text-gray-600">針對 2 位長者、2 位大人、1 位兒童（5 歲）的專屬計畫。此頁整合所有重要資訊，方便隨時回來查看。</p>
+      </div>
 
-        // --- UI: Mobile menu ---
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        }
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Checklist -->
+        <div class="bg-white p-6 rounded-xl card-shadow">
+          <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center"><span class="mr-2">📋</span> 出發前必備清單</h2>
+          <div class="space-y-3" id="checklist-container"></div>
+          <p class="mt-4 text-xs text-gray-500">✔ 勾選狀態會自動儲存（重新整理不會消失）</p>
+        </div>
 
-        // --- Core: Tabs ---
-        function switchTab(tabId) {
-            state.activeTab = tabId;
+        <!-- Itinerary Overview -->
+        <div class="bg-white p-6 rounded-xl card-shadow">
+          <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center"><span class="mr-2">🗓️</span> 行程概覽</h2>
+          <ul class="list-disc pl-5 space-y-2 text-gray-700 text-sm">
+            <li><strong>Day 1：</strong>基隆港登船（啟航 15:00；報到 11:00~13:00）</li>
+            <li><strong>Day 2：</strong>沖繩那霸（抵達 TW 10:00 / JP 11:00；啟航 TW 20:00 / JP 21:00）</li>
+            <li><strong>Day 3：</strong>返抵基隆（抵達 15:00）</li>
+          </ul>
+          <div class="mt-4 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+            <p class="text-sm text-gray-700"><strong>注意：</strong>Day 2 岸上約 8~10 小時，需嚴格控管包車時間，建議保留回港口緩衝。</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-            ['dashboard', 'port', 'ship', 'charter', 'spots'].forEach(id => {
-                const section = document.getElementById(`view-${id}`);
-                const btn = document.getElementById(`nav-${id}`);
+    <!-- 2: PORT (圖1需求：左選單 + 右內容) -->
+    <section id="view-port" class="hidden space-y-8">
+      <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-[#d4a373]">
+        <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+          <span class="mr-2">⚓</span> 基隆港登船攻略
+        </h2>
+        <p class="mt-2 text-gray-600">目的：針對長輩與小孩最佳化登船流程。</p>
+      </div>
 
-                if (id === tabId) {
-                    section.classList.remove('hidden');
-                    btn.classList.replace('tab-inactive', 'tab-active');
-                } else {
-                    section.classList.add('hidden');
-                    btn.classList.replace('tab-active', 'tab-inactive');
-                }
-            });
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Left selectable list -->
+        <div class="bg-white p-6 rounded-xl card-shadow">
+          <h3 class="text-lg font-bold text-gray-800 mb-4">登船流程摘要（四段）</h3>
+          <div id="port-step-list" class="space-y-3"></div>
+          <p class="mt-4 text-xs text-gray-500">提示：點左側項目，右側會顯示該項完整內容。</p>
+        </div>
 
-            // close mobile menu after switching
-            const menu = document.getElementById('mobile-menu');
-            if (menu && !menu.classList.contains('hidden')) menu.classList.add('hidden');
-        }
+        <!-- Right detail panel -->
+        <div class="bg-white p-6 rounded-xl card-shadow">
+          <div id="port-step-detail">
+            <!-- rendered by JS -->
+          </div>
+        </div>
+      </div>
 
-        // --- Checklist: localStorage 記憶 ---
-        function renderChecklist() {
-            const container = document.getElementById('checklist-container');
-            if (!container) return;
+      <!-- Traffic cards -->
+      <div class="bg-white p-6 rounded-xl card-shadow">
+        <h3 class="text-xl font-bold text-gray-800 mb-3">交通與接送行程</h3>
 
-            const STORAGE_KEY = 'okinawa_trip_checklist_v1';
-            let saved = {};
-            try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { saved = {}; }
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <h4 class="font-bold text-gray-800 mb-2">包車接送（搭船）</h4>
+            <ul class="list-disc pl-5 space-y-2 text-sm text-gray-700">
+              <li><strong>交通：</strong>高鐵南港站，包車（tripool-旅步）接送直達西岸碼頭</li>
+              <li><strong>時間：</strong>2 月 25 日 10:30</li>
+              <li><strong>聯絡資訊：</strong><span class="text-gray-400">（待補）</span></li>
+            </ul>
+          </div>
 
-            container.innerHTML = checklistItems.map((item, idx) => {
-                const id = `ck-${idx}`;
-                const checked = saved[id] ? 'checked' : '';
-                return `
-                    <div class="flex items-center">
-                        <input id="${id}" type="checkbox" ${checked}
-                               class="w-5 h-5 text-[#d4a373] rounded border-gray-300 focus:ring-[#d4a373]">
-                        <label for="${id}" class="ml-3 text-gray-700 cursor-pointer">${item}</label>
-                    </div>
-                `;
-            }).join('');
+          <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <h4 class="font-bold text-gray-800 mb-2">預計：火車（下船）</h4>
+            <p class="text-sm text-gray-700">基隆車站北站出口步行 5 分鐘，搭乘火車至高鐵南港站。</p>
+            <div class="mt-3 text-xs text-gray-500">
+              （可選補充）集合點、備援點、雨備、長輩步行注意事項…
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-            checklistItems.forEach((_, idx) => {
-                const id = `ck-${idx}`;
-                const el = document.getElementById(id);
-                if (!el) return;
-                el.addEventListener('change', (e) => {
-                    saved[id] = e.target.checked;
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
-                });
-            });
-        }
+    <!-- 3: SHIP (圖2需求：tabs 高亮 + WiFi 表格隨畫面延展) -->
+    <section id="view-ship" class="hidden space-y-8">
+      <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-[#d4a373]">
+        <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+          <span class="mr-2">🚢</span> 探索星號（名勝世界壹號）設施概覽
+        </h2>
+        <p class="mt-2 text-gray-600">船上消費幣別：台幣 TWD。</p>
+      </div>
 
-        // --- Ship: render cards (支援 html) ---
-        function renderShipInfo(category) {
-            const container = document.getElementById('ship-content-area');
-            const data = shipInfos[category] || [];
+      <div class="bg-white p-6 rounded-xl card-shadow">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">重點資訊（tab / 表格 / 區塊）</h3>
 
-            container.innerHTML = data.map(item => {
-                const badge = item.type
-                    ? `<span class="text-xs font-bold px-2 py-1 rounded bg-yellow-100 text-yellow-800">${item.type}</span>`
-                    : '';
+        <!-- Pills: active highlight -->
+        <div class="flex space-x-2 overflow-x-auto no-scrollbar pb-2" id="ship-pill-bar">
+          <button data-cat="dining" onclick="filterShipInfo('dining')" class="pill pill-active px-4 py-2 rounded-full text-sm whitespace-nowrap">🍽️ 餐廳飲食</button>
+          <button data-cat="wifi" onclick="filterShipInfo('wifi')" class="pill pill-inactive px-4 py-2 rounded-full text-sm whitespace-nowrap">📶 WiFi 網路</button>
+          <button data-cat="tips" onclick="filterShipInfo('tips')" class="pill pill-inactive px-4 py-2 rounded-full text-sm whitespace-nowrap">💡 重要注意事項</button>
+          <button data-cat="ub" onclick="filterShipInfo('ub')" class="pill pill-inactive px-4 py-2 rounded-full text-sm whitespace-nowrap">🧩 備用欄位</button>
+        </div>
 
-                const content = item.html
-                    ? `<div class="text-sm text-gray-600">${item.html}</div>`
-                    : `<p class="text-sm text-gray-600">${item.desc || ''}</p>`;
+        <!-- Content area -->
+        <div id="ship-content-area" class="mt-4 space-y-4"></div>
 
-                return `
-                    <div class="bg-gray-50 p-5 rounded-lg border border-gray-200 hover:border-[#d4a373] transition-colors">
-                        <div class="flex justify-between items-start mb-2">
-                            <h4 class="font-bold text-lg text-gray-800">${item.title || ''}</h4>
-                            ${badge}
-                        </div>
-                        ${content}
-                    </div>
-                `;
-            }).join('');
-        }
+        <!-- 你指定刪除：船上消費預算估計（此段不放） -->
+      </div>
+    </section>
 
-        function filterShipInfo(category) {
-            state.shipCategory = category;
-            renderShipInfo(category);
-        }
+    <!-- 4: CHARTER -->
+    <section id="view-charter" class="hidden space-y-8">
+      <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-[#d4a373]">
+        <h2 class="text-2xl font-bold text-gray-800">🚐 沖繩那霸：舒適包車一日遊</h2>
+        <p class="mt-2 text-gray-600">因有長輩與幼童，且岸上時間約 8~10 小時，建議以「包車」為主，避免頻繁轉乘消耗體力。</p>
+      </div>
 
-        // --- Port:（你這版先用靜態內容，不需要舊版動態 step UI） ---
-        function renderPortStep() {
-            // 保留函式避免舊版初始化報錯（目前 port 區是靜態版面）
-            return;
-        }
+      <div class="bg-white p-6 rounded-xl card-shadow">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">包車：行腳沖繩</h3>
 
-        // init
-        document.addEventListener('DOMContentLoaded', () => {
-            renderChecklist();
-            renderShipInfo('dining'); // default ship category
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h4 class="font-bold text-gray-800 mb-2">包車資訊：6 人座車型</h4>
+            <ul class="space-y-3 text-sm text-gray-700">
+              <li class="flex items-start"><span class="text-green-500 mr-2">✓</span> <strong>車型：</strong>Alphard（或同級車）</li>
+              <li class="flex items-start"><span class="text-green-500 mr-2">✓</span> <strong>包車時間：</strong>8 小時（中文司機）</li>
+              <li class="flex items-start"><span class="text-green-500 mr-2">✓</span> <strong>費用：</strong>38,000 日圓/天（約台幣 8,000）</li>
+              <li class="flex items-start"><span class="text-green-500 mr-2">✓</span> <strong>兒童座椅：</strong>5 歲（須加購，mail 備註）</li>
+            </ul>
+          </div>
+
+          <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <h4 class="font-bold text-red-600 text-sm mb-2">⚠️ 注意事項</h4>
+            <ul class="list-disc pl-5 space-y-2 text-xs text-gray-700">
+              <li>天氣原因郵輪出發但無法登陸岸上，可免費取消。</li>
+              <li>除飲用水之外車內不能飲食；若必須飲食請先徵求司機同意。</li>
+              <li>司機訊息會在出行前一天以 LINE 聯繫。</li>
+              <li>超時 1 小時為 3,000 日幣。</li>
+            </ul>
+            <div class="mt-3 text-xs text-gray-600">
+              <strong>聯絡資訊：</strong><span class="text-gray-400">（待補）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-xl card-shadow">
+        <h3 class="text-xl font-bold text-gray-800 mb-2">🧩 建議補充欄位（可選）</h3>
+        <p class="text-sm text-gray-600">例如：集合點文字、上車點定位、備援點（塞車/景點關閉）、回港口緩衝規則。</p>
+      </div>
+    </section>
+
+    <!-- 5: SPOTS -->
+    <section id="view-spots" class="hidden space-y-8">
+      <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-[#d4a373]">
+        <h2 class="text-2xl font-bold text-gray-800">📍 行程景點（依行程排序）</h2>
+        <p class="mt-2 text-gray-600">先把框架固定，Google Map / 餐食 / 車程時間可逐步補齊。</p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4">
+        <div class="bg-white p-6 rounded-xl card-shadow">
+          <h3 class="text-lg font-bold text-gray-800">行程 1：波上宮</h3>
+          <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+            <div class="bg-gray-50 p-3 rounded-lg border"><strong>Google Map：</strong><span class="text-gray-400">（資料待補）</span></div>
+            <div class="bg-gray-50 p-3 rounded-lg border"><strong>餐食：</strong><span class="text-gray-400">（資料待補）</span></div>
+            <div class="bg-gray-50 p-3 rounded-lg border"><strong>車程時間預估：</strong><span class="text-gray-400">（資料待補）</span></div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl card-shadow">
+          <h3 class="text-lg font-bold text-gray-800">行程 2：玉泉洞</h3>
+          <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+            <div class="bg-gray-50 p-3 rounded-lg border"><strong>Google Map：</strong><span class="text-gray-400">（資料待補）</span></div>
+            <div class="bg-gray-50 p-3 rounded-lg border"><strong>餐食：</strong><span class="text-gray-400">（資料待補）</span></div>
+            <div class="bg-gray-50 p-3 rounded-lg border"><strong>車程時間預估：</strong><span class="text-gray-400">（資料待補）</span></div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl card-shadow">
+          <h3 class="text-lg font-bold text-gray-800">行程 3：瀨長島</h3>
+          <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+            <div class="bg-gray-50 p-3 rounded-lg border"><strong>Google Map：</strong><span class="text-gray-400">（資料待補）</span></div>
+            <div class="bg-gray-50 p-3 rounded-lg border"><strong>餐食：</strong><span class="text-gray-400">（資料待補）</span></div>
+            <div class="bg-gray-50 p-3 rounded-lg border"><strong>車程時間預估：</strong><span class="text-gray-400">（資料待補）</span></div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl card-shadow">
+          <h3 class="text-lg font-bold text-gray-800">行程 4：國際通（時間允許）</h3>
+          <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+            <div class="bg-gray-50 p-3 rounded-lg border"><strong>Google Map：</strong><span class="text-gray-400">（資料待補）</span></div>
+            <div class="bg-gray-50 p-3 rounded-lg border"><strong>餐食：</strong><span class="text-gray-400">（資料待補）</span></div>
+            <div class="bg-gray-50 p-3 rounded-lg border"><strong>車程時間預估：</strong><span class="text-gray-400">（資料待補）</span></div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl card-shadow">
+          <h3 class="text-lg font-bold text-gray-800">行程 5：回港口（時間不夠 / 回程緩衝）</h3>
+          <div class="mt-3 bg-yellow-50 p-3 rounded-lg border border-yellow-200 text-sm text-gray-700">
+            <strong>車程時間預估：</strong><span class="text-gray-400">（資料待補）</span>
+            <p class="mt-2 text-xs text-gray-600"><strong>提醒：</strong>建議保留回港口緩衝（塞車、停車、集合走路時間）。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-white border-t border-[#e5e5e5]">
+    <div class="max-w-6xl mx-auto px-4 py-6 text-sm text-gray-500">
+      © 2026 Family Trip Guide
+    </div>
+  </footer>
+
+  <script>
+    // -----------------------------
+    // Global state
+    // -----------------------------
+    const state = {
+      activeTab: 'dashboard',
+      shipCategory: 'dining',
+      portStepIndex: 0
+    };
+
+    // -----------------------------
+    // Data: Checklist (localStorage)
+    // -----------------------------
+    const checklistItems = [
+      "日幣現金",
+      "護照正本 (有效期6個月以上)",
+      "護照 A4 影本 x 2份 (報到與免稅用)",
+      "船票 (電子檔或列印)",
+      "信用卡 (Visa/Master，船上綁定用)",
+      "個人常備藥品 (暈船藥、感冒藥等)",
+      "日本網路漫遊開通",
+      "舒適好走的鞋子",
+      "薄外套"
+    ];
+
+    function renderChecklist() {
+      const container = document.getElementById('checklist-container');
+      if (!container) return;
+
+      const STORAGE_KEY = 'okinawa_trip_checklist_v1';
+      let saved = {};
+      try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { saved = {}; }
+
+      container.innerHTML = checklistItems.map((item, idx) => {
+        const id = `ck-${idx}`;
+        const checked = saved[id] ? 'checked' : '';
+        return `
+          <div class="flex items-center">
+            <input id="${id}" type="checkbox" ${checked}
+                   class="w-5 h-5 text-[#d4a373] rounded border-gray-300 focus:ring-[#d4a373]">
+            <label for="${id}" class="ml-3 text-gray-700 cursor-pointer">${item}</label>
+          </div>
+        `;
+      }).join('');
+
+      checklistItems.forEach((_, idx) => {
+        const id = `ck-${idx}`;
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('change', (e) => {
+          saved[id] = e.target.checked;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
         });
-    </script>
+      });
+    }
+
+    // -----------------------------
+    // UI: Mobile menu
+    // -----------------------------
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    }
+
+    // -----------------------------
+    // Core: top tabs
+    // -----------------------------
+    function switchTab(tabId) {
+      state.activeTab = tabId;
+
+      ['dashboard', 'port', 'ship', 'charter', 'spots'].forEach(id => {
+        const section = document.getElementById(`view-${id}`);
+        const btn = document.getElementById(`nav-${id}`);
+
+        if (id === tabId) {
+          section.classList.remove('hidden');
+          btn.classList.remove('tab-inactive');
+          btn.classList.add('tab-active');
+        } else {
+          section.classList.add('hidden');
+          btn.classList.remove('tab-active');
+          btn.classList.add('tab-inactive');
+        }
+      });
+
+      // close mobile menu after switching
+      const menu = document.getElementById('mobile-menu');
+      if (menu && !menu.classList.contains('hidden')) menu.classList.add('hidden');
+
+      // ensure renders for sections that need JS
+      if (tabId === 'port') renderPortSteps();
+      if (tabId === 'ship') { setShipPillActive(state.shipCategory); renderShipInfo(state.shipCategory); }
+    }
+
+    // -----------------------------
+    // PORT: selectable list + detail (圖1)
+    // -----------------------------
+    const portSteps = [
+      {
+        title: "抵達與行李",
+        time: "11:00-12:30",
+        summary: "抵達碼頭、托運/整理行李、確認證件與資料。",
+        details: [
+          "建議 10:30 前抵達（有長輩/小孩可多預留緩衝）。",
+          "先確認：護照正本、船票、護照影本等是否齊全。",
+          "行李：可先分出「隨身包」與「托運/交寄」物品。",
+          "如遇雨天：備妥雨具，優先顧及長輩步行安全。"
+        ]
+      },
+      {
+        title: "報到領房卡",
+        time: "12:30-13:30",
+        summary: "辦理報到、綁定信用卡/付款方式、領取房卡。",
+        details: [
+          "準備：護照、船票/訂位資料、（必要時）影本。",
+          "船上消費通常會綁定信用卡（Visa/Master）。",
+          "領到房卡後：確認房號、用餐時段（若有）、集合須知。"
+        ]
+      },
+      {
+        title: "通關與登船",
+        time: "13:30-14:30",
+        summary: "通關檢查、安檢後登船，確認動線與集合點。",
+        details: [
+          "依現場指示排隊通關；長輩/小孩可留意優先通道（若有）。",
+          "登船後建議先熟悉：電梯位置、餐廳、醫務室、集合點。",
+          "如有 WiFi/付費服務需求，可先確認購買地點與方式。"
+        ]
+      },
+      {
+        title: "離船流程",
+        time: "Day 3",
+        summary: "返抵基隆後依指示下船、領取行李、銜接交通。",
+        details: [
+          "依船方公告的下船批次與指示行動。",
+          "確認隨身物品完整：房卡、手機、護照、充電器等。",
+          "下船後按既定計畫搭火車回南港（雨備/備援也可先規劃）。"
+        ]
+      }
+    ];
+
+    function renderPortSteps() {
+      const listEl = document.getElementById('port-step-list');
+      const detailEl = document.getElementById('port-step-detail');
+      if (!listEl || !detailEl) return;
+
+      // left list
+      listEl.innerHTML = portSteps.map((s, idx) => {
+        const isActive = idx === state.portStepIndex;
+        return `
+          <button type="button"
+            class="step-item w-full text-left border rounded-xl p-4 flex gap-3 items-start ${n
+                   ${isActive ? 'step-active' : 'step-inactive'}"
+            onclick="selectPortStep(${idx})">
+            <div class="step-index">${idx + 1}</div>
+            <div class="flex-1">
+              <div class="flex items-center justify-between gap-3">
+                <div class="font-bold text-gray-800">${s.title}</div>
+                <div class="text-xs text-gray-500">${s.time}</div>
+              </div>
+              <div class="mt-1 text-sm text-gray-600">${s.summary}</div>
+            </div>
+          </button>
+        `;
+      }).join('');
+
+      // right detail
+      const s = portSteps[state.portStepIndex];
+      detailEl.innerHTML = `
+        <div class="border-l-4 border-[#d4a373] bg-white rounded-xl">
+          <div class="flex items-start gap-3">
+            <div class="text-2xl">🧾</div>
+            <div class="flex-1">
+              <h3 class="text-xl font-bold text-gray-800">${s.title}</h3>
+              <p class="text-sm text-gray-500 mt-1">${s.time}</p>
+              <p class="text-sm text-gray-700 mt-3">${s.summary}</p>
+
+              <div class="mt-4 bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <div class="font-bold text-gray-800 text-sm mb-2">完整內容</div>
+                <ul class="list-disc pl-5 space-y-2 text-sm text-gray-700">
+                  ${s.details.map(x => `<li>${x}</li>`).join('')}
+                </ul>
+              </div>
+
+              <p class="mt-4 text-xs text-gray-500">（你可在 <code>portSteps</code> 裡補充更多細節或改文字。）</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function selectPortStep(idx) {
+      state.portStepIndex = idx;
+      renderPortSteps();
+    }
+
+    // -----------------------------
+    // SHIP: pills active + content (圖2)
+    // -----------------------------
+    function setShipPillActive(category) {
+      const bar = document.getElementById('ship-pill-bar');
+      if (!bar) return;
+      bar.querySelectorAll('button[data-cat]').forEach(btn => {
+        const cat = btn.getAttribute('data-cat');
+        if (cat === category) {
+          btn.classList.remove('pill-inactive');
+          btn.classList.add('pill-active');
+        } else {
+          btn.classList.remove('pill-active');
+          btn.classList.add('pill-inactive');
+        }
+      });
+    }
+
+    function filterShipInfo(category) {
+      state.shipCategory = category;
+      setShipPillActive(category);
+      renderShipInfo(category);
+    }
+
+    function renderShipInfo(category) {
+      const container = document.getElementById('ship-content-area');
+      if (!container) return;
+
+      if (category === 'dining') {
+        container.innerHTML = `
+          <div class="bg-gray-50 border border-gray-200 rounded-xl p-5">
+            <div class="flex items-center justify-between">
+              <h4 class="font-bold text-gray-800 text-lg">餐廳飲食</h4>
+              <span class="text-xs font-bold px-2 py-1 rounded bg-yellow-100 text-yellow-800">資訊</span>
+            </div>
+            <p class="mt-2 text-sm text-gray-700">（資料暫時不變）你可以把「餐廳清單/營業時間/費用/是否需預約」整理成表格或卡片後貼在這裡。</p>
+          </div>
+        `;
+        return;
+      }
+
+      if (category === 'tips') {
+        container.innerHTML = `
+          <div class="bg-gray-50 border border-gray-200 rounded-xl p-5">
+            <div class="flex items-center justify-between">
+              <h4 class="font-bold text-gray-800 text-lg">重要注意事項</h4>
+              <span class="text-xs font-bold px-2 py-1 rounded bg-yellow-100 text-yellow-800">資訊</span>
+            </div>
+            <p class="mt-2 text-sm text-gray-700">（資料暫時不變）可放：登船注意、用餐規範、甲板安全、長輩活動建議、醫務室資訊等。</p>
+          </div>
+        `;
+        return;
+      }
+
+      if (category === 'ub') {
+        container.innerHTML = `
+          <div class="bg-gray-50 border border-gray-200 rounded-xl p-5">
+            <div class="flex items-center justify-between">
+              <h4 class="font-bold text-gray-800 text-lg">備用欄位</h4>
+              <span class="text-xs font-bold px-2 py-1 rounded bg-yellow-100 text-yellow-800">資訊</span>
+            </div>
+            <p class="mt-2 text-sm text-gray-700">（留空，資料待補）例如：緊急聯絡資訊、集合點、每日行程公告截圖、船上地圖連結等。</p>
+          </div>
+        `;
+        return;
+      }
+
+      // WiFi (圖2：表格可隨畫面延展)
+      if (category === 'wifi') {
+        container.innerHTML = `
+          <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <div class="flex items-center justify-between">
+              <h4 class="font-bold text-gray-800 text-lg">WiFi 方案價格（新台幣 NTD）</h4>
+              <span class="text-xs font-bold px-2 py-1 rounded bg-yellow-100 text-yellow-800">資訊</span>
+            </div>
+            <p class="mt-2 text-sm text-gray-600">表格會隨畫面寬度延展；在手機上可左右滑動查看。</p>
+
+            <div class="mt-4 overflow-x-auto">
+              <table class="w-full text-sm bg-white">
+                <thead>
+                  <tr class="bg-gray-50">
+                    <th class="p-2 border text-center">方案</th>
+                    <th class="p-2 border text-center">網速</th>
+                    <th class="p-2 border text-center">設備</th>
+                    <th class="p-2 border text-center">兩晚</th>
+                    <th class="p-2 border text-center">三晚</th>
+                    <th class="p-2 border text-center">五晚</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="p-2 border text-center" rowspan="4">標準</td>
+                    <td class="p-2 border text-center" rowspan="4">基本</td>
+                    <td class="p-2 border text-center">一台</td>
+                    <td class="p-2 border text-center">NTD 490</td>
+                    <td class="p-2 border text-center">NTD 735</td>
+                    <td class="p-2 border text-center">NTD 1,225</td>
+                  </tr>
+                  <tr>
+                    <td class="p-2 border text-center">兩台</td>
+                    <td class="p-2 border text-center">NTD 906</td>
+                    <td class="p-2 border text-center">NTD 1,359</td>
+                    <td class="p-2 border text-center">NTD 2,265</td>
+                  </tr>
+                  <tr>
+                    <td class="p-2 border text-center">三台</td>
+                    <td class="p-2 border text-center">NTD 1,238</td>
+                    <td class="p-2 border text-center">NTD 1,857</td>
+                    <td class="p-2 border text-center">NTD 3,095</td>
+                  </tr>
+                  <tr>
+                    <td class="p-2 border text-center">四台</td>
+                    <td class="p-2 border text-center">NTD 1,578</td>
+                    <td class="p-2 border text-center">NTD 2,367</td>
+                    <td class="p-2 border text-center">NTD 3,945</td>
+                  </tr>
+
+                  <tr>
+                    <td class="p-2 border text-center" rowspan="4">尊貴</td>
+                    <td class="p-2 border text-center" rowspan="4">良好</td>
+                    <td class="p-2 border text-center">一台</td>
+                    <td class="p-2 border text-center">NTD 714</td>
+                    <td class="p-2 border text-center">NTD 1,071</td>
+                    <td class="p-2 border text-center">NTD 1,785</td>
+                  </tr>
+                  <tr>
+                    <td class="p-2 border text-center">兩台</td>
+                    <td class="p-2 border text-center">NTD 1,288</td>
+                    <td class="p-2 border text-center">NTD 1,932</td>
+                    <td class="p-2 border text-center">NTD 3,220</td>
+                  </tr>
+                  <tr>
+                    <td class="p-2 border text-center">三台</td>
+                    <td class="p-2 border text-center">NTD 1,810</td>
+                    <td class="p-2 border text-center">NTD 2,715</td>
+                    <td class="p-2 border text-center">NTD 4,525</td>
+                  </tr>
+                  <tr>
+                    <td class="p-2 border text-center">四台</td>
+                    <td class="p-2 border text-center">NTD 2,384</td>
+                    <td class="p-2 border text-center">NTD 3,576</td>
+                    <td class="p-2 border text-center">NTD 5,960</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p class="mt-4 text-xs text-gray-500">
+              提示：你如果最後確定住幾晚，我可以再幫你加「自動高亮欄位」或「合計估算」。
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = '';
+    }
+
+    // -----------------------------
+    // Init
+    // -----------------------------
+    document.addEventListener('DOMContentLoaded', () => {
+      renderChecklist();
+      renderPortSteps();                // 先建立 port 區（即使一開始不顯示也沒差）
+      setShipPillActive(state.shipCategory);
+      renderShipInfo(state.shipCategory);
+    });
+  </script>
 </body>
 </html>
