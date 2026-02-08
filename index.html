@@ -114,7 +114,7 @@
       </div>
     </section>
 
-    <!-- 2: PORT (圖1：左選單 + 右內容) -->
+    <!-- 2: PORT (左選單 + 右內容) -->
     <section id="view-port" class="hidden space-y-8">
       <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-[#d4a373]">
         <h2 class="text-2xl font-bold text-gray-800 flex items-center">
@@ -154,15 +154,13 @@
           <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <h4 class="font-bold text-gray-800 mb-2">預計：火車（下船）</h4>
             <p class="text-sm text-gray-700">基隆車站北站出口步行 5 分鐘，搭乘火車至高鐵南港站。</p>
-            <div class="mt-3 text-xs text-gray-500">
-              （可選補充）集合點、備援點、雨備、長輩步行注意事項…
-            </div>
+            <div class="mt-3 text-xs text-gray-500">（可選補充）集合點、備援點、雨備、長輩步行注意事項…</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 3: SHIP (圖2：tabs 高亮 + WiFi 表格自動延展) -->
+    <!-- 3: SHIP (pills 高亮 + WiFi 表格自適應 + 餐廳/注意/備用資料顯示) -->
     <section id="view-ship" class="hidden space-y-8">
       <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-[#d4a373]">
         <h2 class="text-2xl font-bold text-gray-800 flex items-center">
@@ -182,7 +180,8 @@
           <button type="button" data-cat="ub" onclick="filterShipInfo('ub')" class="pill pill-inactive px-4 py-2 rounded-full text-sm whitespace-nowrap">🧩 備用欄位</button>
         </div>
 
-        <div id="ship-content-area" class="mt-4 space-y-4"></div>
+        <!-- Content area -->
+        <div id="ship-content-area" class="mt-4"></div>
       </div>
     </section>
 
@@ -227,9 +226,8 @@
         <p class="mt-2 text-gray-600">先把框架固定，Google Map / 餐食 / 車程時間可逐步補齊。</p>
       </div>
 
-      <div class="grid grid-cols-1 gap-4">
-        <div class="bg-white p-6 rounded-xl card-shadow">
-          <h3 class="text-lg font-bold text-gray-800">行程 1：波上宮</h3>
+      <div class="bg-white p-6 rounded-xl card-shadow">
+         <h3 class="text-lg font-bold text-gray-800">行程 1：波上宮</h3>
           <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
             <div class="bg-gray-50 p-3 rounded-lg border"><strong>Google Map：</strong><span class="text-gray-400"><a href="https://maps.app.goo.gl/ZvyBZ7yXo1AruGbM8">MAP(連結點選)</a></span></div>
             <div class="bg-gray-50 p-3 rounded-lg border"><strong>餐食：</strong><span class="text-gray-400">
@@ -305,14 +303,12 @@
   </main>
 
   <footer class="bg-white border-t border-[#e5e5e5]">
-    <div class="max-w-6xl mx-auto px-4 py-6 text-sm text-gray-500">
-      © 2026 Family Trip Guide
-    </div>
+    <div class="max-w-6xl mx-auto px-4 py-6 text-sm text-gray-500">© 2026 Family Trip Guide</div>
   </footer>
 
   <script>
     // -----------------------------
-    // Global state
+    // State
     // -----------------------------
     const state = {
       activeTab: 'dashboard',
@@ -321,7 +317,7 @@
     };
 
     // -----------------------------
-    // Checklist (localStorage)
+    // Checklist
     // -----------------------------
     const checklistItems = [
       "日幣現金",
@@ -379,8 +375,8 @@
     // -----------------------------
     function switchTab(tabId) {
       state.activeTab = tabId;
-
       const ids = ['dashboard', 'port', 'ship', 'charter', 'spots'];
+
       ids.forEach(id => {
         const section = document.getElementById(`view-${id}`);
         const btn = document.getElementById(`nav-${id}`);
@@ -401,7 +397,7 @@
       const menu = document.getElementById('mobile-menu');
       if (menu && !menu.classList.contains('hidden')) menu.classList.add('hidden');
 
-      // ensure renders for sections that need JS
+      // ensure section render
       if (tabId === 'port') renderPortSteps();
       if (tabId === 'ship') {
         setShipPillActive(state.shipCategory);
@@ -410,7 +406,7 @@
     }
 
     // -----------------------------
-    // PORT (圖1)
+    // PORT: left select + right detail
     // -----------------------------
     const portSteps = [
       {
@@ -493,15 +489,12 @@
                 <h3 class="text-xl font-bold text-gray-800">${s.title}</h3>
                 <p class="text-sm text-gray-500 mt-1">${s.time}</p>
                 <p class="text-sm text-gray-700 mt-3">${s.summary}</p>
-
                 <div class="mt-4 bg-gray-50 border border-gray-200 rounded-lg p-4">
                   <div class="font-bold text-gray-800 text-sm mb-2">完整內容</div>
                   <ul class="list-disc pl-5 space-y-2 text-sm text-gray-700">
                     ${s.details.map(x => `<li>${x}</li>`).join('')}
                   </ul>
                 </div>
-
-                <p class="mt-4 text-xs text-gray-500">（你可在 <code>portSteps</code> 裡補充更多細節或改文字。）</p>
               </div>
             </div>
           </div>
@@ -515,8 +508,48 @@
     }
 
     // -----------------------------
-    // SHIP (圖2)
+    // SHIP: data (已加入你提供的 dining/tips/ub)
     // -----------------------------
+    const shipData = {
+      dining: [
+        { title: "麗都自助餐 (The Lido)", type: "免費", desc: "位於12樓船中。提供多國料理的自助餐（Buffet），菜色種類最多，包含沙拉、熱食、甜點、水果等。自由取餐、宵夜時段也有開放" },
+        { title: "星夢餐廳 (Dream Dining)", type: "免費", desc: "位於6樓船尾，空間較大，提供西式或中式套餐（Set Menu）。早餐評價不錯，午晚餐通常是配好的套餐，若食量大可以加點主餐或特定菜色。" },
+        { title: "百味軒 (Pavilion)", type: "免費", desc: "位於6樓船中，裝潢偏中式，提供中式合菜或西式套餐。可以單點喜歡的前菜或主餐多吃幾份。" },
+        { title: "絲路花舞 (Silk Road)", type: "付費", desc: "位於7樓，精緻中式料理與港式點心，裝潢帶有復古舞廳感。早餐時段有提供付費的港式飲茶套餐。" },
+        { title: "藍湖美食 (Blue Lagoon)", type: "付費", desc: "位於7樓船中（大廳旁），供東南亞與中式料理，如肉骨茶、沙嗲、牛肉麵、炒粿條等。營業時間最長（通常僅凌晨 4-6 點休息）" },
+        { title: "火鍋 (Hot Pot)", type: "付費", desc: "位於8樓船尾，提供鴛鴦鍋與自助夾取的蔬菜、火鍋料，適合喜歡喝熱湯的旅客。" },
+        { title: "義大利披薩餐廳 (Mozzarella Ristorante & Pizzeria)", type: "付費", desc: "位於7樓，提供現烤披薩（餅皮有嚼勁）與義大利麵。" },
+        { title: "海馬日本料理 / 鐵板燒 (Umi Uma)", type: "付費", desc: "位於8樓船尾，提供日式定食、壽司與鐵板燒。鐵板燒座位極少，建議一上船就預約。" },
+        { title: "免費餐廳規則", type: "注意", desc: "同一餐期通常只能選擇一間免費餐廳用餐，若去第二間可能會被刷卡收費。" },
+        { title: "查看菜單", type: "注意", desc: "可以透過船上的 App 或餐廳門口的電子看板，先查看當天的菜單再決定要去哪一間吃。" },
+        { title: "隱藏版宵夜", type: "注意", desc: "賭場內在深夜時段（約 11 點後）有時會提供免費的限量泡麵與檸檬水。" }
+      ],
+      tips: [
+        { title: "台式插座電壓", type: "注意", desc: "房間內配有「中式插座」（通常指兩孔扁插），也就是台灣電器的插頭可以直接插入，不需要轉接頭。" },
+        { title: "英式插座電壓", type: "注意", desc: "房間內也有配備英式（港式）的三腳扁型插座，需要轉接頭。" },
+        { title: "電壓", type: "注意", desc: "船上的電壓為 220V - 240V，目前的 3C 產品充電器通常支援國際電壓（100V-240V），可以直接攜帶台灣的手機充電器去充電。" },
+        { title: "USB 插孔", type: "注意", desc: "房間書桌處配有 USB 充電孔（Type-A，即傳統長方形的那種），建議自備轉接頭或 USB-A 的充電線。" },
+        { title: "飲用水", type: "注意", desc: "房間內瓶裝水免費，喝完可請房務補。船上提供多處免費的飲用水源，建議您可以攜帶保溫瓶或水壺以便裝水回房間飲用。" },
+        { title: "暈船", type: "健康", desc: "沖繩航線通常平穩，但建議第一晚睡前先吃暈船藥預防。" }
+      ],
+      ub: [
+        { title: "-", type: "注意", desc: "-。" },
+        { title: "-", type: "注意", desc: "-。" },
+        { title: "-", type: "注意", desc: "-。" },
+        { title: "-", type: "注意", desc: "-。" },
+        { title: "-", type: "注意", desc: "-。" },
+        { title: "-", type: "健康", desc: "-。" }
+      ]
+    };
+
+    function badgeColor(type) {
+      if (type === '免費') return 'bg-green-100 text-green-800';
+      if (type === '付費') return 'bg-red-100 text-red-800';
+      if (type === '健康') return 'bg-blue-100 text-blue-800';
+      if (type === '注意') return 'bg-yellow-100 text-yellow-800';
+      return 'bg-gray-100 text-gray-800';
+    }
+
     function setShipPillActive(category) {
       const bar = document.getElementById('ship-pill-bar');
       if (!bar) return;
@@ -538,57 +571,36 @@
       renderShipInfo(category);
     }
 
+    function renderShipCards(items) {
+      // 卡片版：符合你紅框預期（顯示實際餐廳/注意事項資料）
+      return `
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          ${items.map(x => `
+            <div class="bg-gray-50 border border-gray-200 rounded-xl p-5 hover:border-[#d4a373] transition-colors">
+              <div class="flex items-start justify-between gap-3">
+                <h4 class="font-bold text-gray-800 text-base">${x.title}</h4>
+                <span class="text-xs font-bold px-2 py-1 rounded ${badgeColor(x.type)}">${x.type}</span>
+              </div>
+              <p class="mt-2 text-sm text-gray-700 leading-relaxed">${x.desc}</p>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
     function renderShipInfo(category) {
       const container = document.getElementById('ship-content-area');
       if (!container) return;
 
-      if (category === 'dining') {
-        container.innerHTML = `
-          <div class="bg-gray-50 border border-gray-200 rounded-xl p-5">
-            <div class="flex items-center justify-between">
-              <h4 class="font-bold text-gray-800 text-lg">餐廳飲食</h4>
-              <span class="text-xs font-bold px-2 py-1 rounded bg-yellow-100 text-yellow-800">資訊</span>
-            </div>
-            <p class="mt-2 text-sm text-gray-700">（資料暫時不變）你可以把「餐廳清單/營業時間/費用/是否需預約」整理成表格或卡片後貼在這裡。</p>
-          </div>
-        `;
-        return;
-      }
-
-      if (category === 'tips') {
-        container.innerHTML = `
-          <div class="bg-gray-50 border border-gray-200 rounded-xl p-5">
-            <div class="flex items-center justify-between">
-              <h4 class="font-bold text-gray-800 text-lg">重要注意事項</h4>
-              <span class="text-xs font-bold px-2 py-1 rounded bg-yellow-100 text-yellow-800">資訊</span>
-            </div>
-            <p class="mt-2 text-sm text-gray-700">（資料暫時不變）可放：登船注意、用餐規範、甲板安全、長輩活動建議、醫務室資訊等。</p>
-          </div>
-        `;
-        return;
-      }
-
-      if (category === 'ub') {
-        container.innerHTML = `
-          <div class="bg-gray-50 border border-gray-200 rounded-xl p-5">
-            <div class="flex items-center justify-between">
-              <h4 class="font-bold text-gray-800 text-lg">備用欄位</h4>
-              <span class="text-xs font-bold px-2 py-1 rounded bg-yellow-100 text-yellow-800">資訊</span>
-            </div>
-            <p class="mt-2 text-sm text-gray-700">（留空，資料待補）例如：緊急聯絡資訊、集合點、每日行程公告截圖、船上地圖連結等。</p>
-          </div>
-        `;
-        return;
-      }
-
       if (category === 'wifi') {
+        // WiFi 表格：寬度自動延展，小螢幕可橫滑
         container.innerHTML = `
           <div class="bg-white rounded-xl border border-gray-200 p-5">
             <div class="flex items-center justify-between">
               <h4 class="font-bold text-gray-800 text-lg">WiFi 方案價格（新台幣 NTD）</h4>
               <span class="text-xs font-bold px-2 py-1 rounded bg-yellow-100 text-yellow-800">資訊</span>
             </div>
-            <p class="mt-2 text-sm text-gray-600">表格會隨畫面寬度延展；在手機上可左右滑動查看。</p>
+            <p class="mt-2 text-sm text-gray-600">表格會隨畫面寬度延展；手機上可左右滑動查看。</p>
 
             <div class="mt-4 overflow-x-auto">
               <table class="w-full text-sm bg-white">
@@ -660,15 +672,15 @@
               </table>
             </div>
 
-            <p class="mt-4 text-xs text-gray-500">
-              提示：你如果最後確定住幾晚，我可以再幫你加「自動高亮欄位」或「合計估算」。
-            </p>
+            <p class="mt-4 text-xs text-gray-500">提示：若你最後確定住幾晚，可加上「自動高亮欄位」或「合計估算」。</p>
           </div>
         `;
         return;
       }
 
-      container.innerHTML = '';
+      // dining / tips / ub：用卡片顯示完整資料（你紅框想要的）
+      const items = shipData[category] || [];
+      container.innerHTML = renderShipCards(items);
     }
 
     // -----------------------------
@@ -681,8 +693,6 @@
       renderShipInfo(state.shipCategory);
     });
   </script>
+
 </body>
 </html>
-
-
-
